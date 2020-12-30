@@ -4,3 +4,40 @@
 <h1>@ViewData["Title"]</h1>
 
 <p>View and edit disciplines</p>
+
+<div class="row">
+    <div class="col-12">
+        <table id="disciplines-table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Professor name</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Professor name</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $('#disciplines-table').DataTable({
+            ajax: '/Disciplines/GetData',
+        columns: [
+        { data: 'id' },
+        { data: 'name' },
+        { data: 'professorName' }
+        ]
+        });
+    });
+</script>
