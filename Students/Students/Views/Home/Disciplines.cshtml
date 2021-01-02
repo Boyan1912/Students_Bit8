@@ -52,14 +52,14 @@
             { 
                 data: 'ProfessorName',
                 render: function ( data, type, row, meta ) {
-                  return data + ' <a href="" class="editor_edit">Edit</a>';
+                  return '<div class="row"><input type="text" readonly="readonly" class="form-control col-7" value="' + data + '"/> <a href="" type="button" class="editor_edit btn btn-primary col-2">Edit</a></div>';
                 }
             },
             { data: 'Score' },
             {
                 data: null,
                 className: "center",
-                defaultContent: '<a href="" class="editor_remove">Delete</a>'
+                defaultContent: '<a href="" class="editor_remove btn btn-danger">Delete</a>'
             }
             ]
             });
@@ -67,16 +67,17 @@
         
         $('#disciplines-table tbody').on('click', 'tr', function (e) {
             e.preventDefault();
-            if (e.target.className == 'editor_remove') {
-                var row = table.row(this);
-                var discipline = row.data();
+            var row = table.row(this);
+            var discipline = row.data();
+            if ($(e.target).hasClass('editor_remove')) {
                 if (discipline.Score > 0) {
                     alert("Only disciplines without scores can be deleted!")
                 }
                 else {
                     $.ajax({
                       url: "/Disciplines/Delete?id=" + discipline.IdDiscipline,
-                      method: "DELETE"
+                      method: "DELETE",
+                      contentType: 'application/json'
                     })
                     .done(function( res ) {
                         if (!!res.ErrorMessage) {
@@ -92,12 +93,72 @@
                       })
                 }
             }
-            else if (e.target.className == 'editor_edit') {
-
+            else if ($(e.target).hasClass('editor_edit')) {
+                var btn = $(e.target);
+                var editMode = btn.html() === 'Edit'
+                var input = btn.prev('input');
+                if (editMode) {
+                    var oldVal = $(input).val();
+                    btn.html('Done');
+                    $(input).removeAttr('readonly')
+                                .attr('value', '')
+                                .focus();
+                }
+                else {
+                    $.ajax({
+                      url: "/Disciplines/Edit?id=" + discipline.IdDiscipline + "&professor=" + $(input).val(),
+                      method: "PUT",
+                      contentType: 'application/json'
+                    })
+                    .done(function( res ) {
+                        if (!!res.ErrorMessage) {
+                            alert(res.ErrorMessage);
+                            $(input).val(oldVal);
+                        }
+                        else {
+                            
+                        }
+                      })
+                    .fail(function(err) {
+                        console.error(err.responseText);
+                        alert( "Error editing discipline!");
+                        $(input).val(oldVal);
+                      })
+                    .always(function() {
+                        btn.html('Edit');
+                        $(input).attr('readonly', 'readonly');
+                    })
+                }
             }
-
-
         } );
+
+
+        /*$('#disciplines-table').on( 'click', 'tbody td', function (e) {
+            table.cell(this).edit();
+            if (e.target.className == 'editor_edit') {
+                $.ajax({
+                      url: "/Disciplines/Edit?id=" + discipline.IdDiscipline + "&professor=",
+                      method: "PUT",
+                      contentType: 'application/json',
+                      //data: { id: discipline.IdDiscipline, newName: '' }
+                    })
+                    .done(function( res ) {
+                        if (!!res.ErrorMessage) {
+                            alert(res.ErrorMessage);
+                        }
+                        else {
+                            
+                        }
+                      })
+                    .fail(function(err) {
+                        console.error(err.responseText);
+                        alert( "Error editing discipline!");
+                      })
+            }
+            
+            
+            
+        } );*/
 
     });
 </script>

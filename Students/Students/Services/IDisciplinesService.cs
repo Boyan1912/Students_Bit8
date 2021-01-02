@@ -10,5 +10,6 @@ namespace Students.Services
     {
         Task<List<Discipline>> GetAll();
         Task Delete(int id);
+        Task UpdateProfessorName(int id, string professorName);
     }
 }

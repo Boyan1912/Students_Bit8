@@ -55,7 +55,24 @@ namespace Students.API
                 result.ErrorMessage = ex.Message;
             }
 
-            return new JsonResult(result);
+            return Ok(result);
+        }
+
+        [HttpPut("Disciplines/Edit")]
+        public async Task<IActionResult> Edit(int id, string professor)
+        {
+            var result = new ApiResultModel<object>();
+            try
+            {
+                await _service.UpdateProfessorName(id, professor);
+                result.Message = "Success";
+            }
+            catch (Exception ex)
+            {
+                result.ErrorMessage = ex.Message;
+            }
+
+            return Ok(result);
         }
     }
 }

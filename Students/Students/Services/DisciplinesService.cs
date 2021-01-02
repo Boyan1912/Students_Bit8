@@ -60,5 +60,19 @@ namespace Students.Services
                 await connection.CloseAsync();
             }
         }
+
+        public async Task UpdateProfessorName(int id, string professorName)
+        {
+            using var connection = new MySqlConnection(_connString);
+            {
+                await connection.OpenAsync();
+                using var command = new MySqlCommand(
+                    "UPDATE discipline " +
+                    "SET professor_name = '" + professorName + "'" +
+                    " WHERE id_discipline = " + id, connection);
+                await command.ExecuteScalarAsync();
+                await connection.CloseAsync();
+            }
+        }
     }
 }
