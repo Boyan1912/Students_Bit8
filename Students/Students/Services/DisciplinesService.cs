@@ -33,7 +33,11 @@ namespace Students.Services
                         discipline.IdDiscipline = (int)reader.GetValue(0);
                         discipline.Name = reader.GetValue(1).ToString();
                         discipline.ProfessorName = reader.GetValue(2).ToString();
-                        discipline.Score = (float)reader.GetValue(3);
+                        float score;
+                        if (float.TryParse(reader.GetValue(3).ToString(), System.Globalization.NumberStyles.Float, null, out score))
+                        {
+                            discipline.Score = score;
+                        }
 
                         result.Add(discipline);
                     }

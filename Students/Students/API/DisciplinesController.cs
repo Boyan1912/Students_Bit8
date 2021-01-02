@@ -26,14 +26,19 @@ namespace Students.API
         [HttpGet("Disciplines/GetData")]
         public async Task<IActionResult> GetData()
         {
-            var disciplines = await _service.GetAll();
-            var result = new GridResultModel<Discipline>()
-            {
-                 Data = disciplines
-            };
-            var json = new JsonResult(result);
+            var result = new GridResultModel<Discipline>();
 
-            return json;
+            try
+            {
+                var disciplines = await _service.GetAll();
+                result.Data = disciplines;
+            }
+            catch (Exception ex)
+            {
+                result.ErrorMessage = ex.Message;
+            }
+
+            return new JsonResult(result);
         }
     }
 }

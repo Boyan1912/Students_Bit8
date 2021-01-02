@@ -36,8 +36,15 @@
 <script>
     $(document).ready(function(){
         $('#disciplines-table').dataTable({
-            ajax: { url: '/Disciplines/GetData',
-                dataSrc: 'Data'
+            ajax: { 
+                url: '/Disciplines/GetData',
+                dataSrc: function (data) {
+                    if (!!data.ErrorMessage) {
+                        console.error(data.ErrorMessage);
+                    }
+
+                    return data.Data;
+                }
             },
             columns: [
             { data: 'IdDiscipline' },
@@ -50,11 +57,17 @@
             },
             { data: 'Score' },
             {
-            data: null,
-            className: "center",
-            defaultContent: '<a href="" class="editor_remove">Delete</a>'
+                data: null,
+                className: "center",
+                defaultContent: '<a href="" class="editor_remove">Delete</a>'
             }
             ]
             });
+
+        $('#disciplines-table').on('click', 'a.editor_remove', function (e) {
+            e.preventDefault();
+ 
+        } );
+
     });
 </script>
