@@ -12,7 +12,9 @@
                 <tr>
                     <th>Id</th>
                     <th>Name</th>
-                    <th>Professor name</th>
+                    <th>Professor Name</th>
+                    <th>Score</th>
+                    <th>Delete</th>
                 </tr>
             </thead>
             <tbody>
@@ -22,7 +24,9 @@
                 <tr>
                     <th>Id</th>
                     <th>Name</th>
-                    <th>Professor name</th>
+                    <th>Professor Name</th>
+                    <th>Score</th>
+                    <th>Delete</th>
                 </tr>
             </tfoot>
         </table>
@@ -31,13 +35,26 @@
 
 <script>
     $(document).ready(function(){
-        $('#disciplines-table').DataTable({
-            ajax: '/Disciplines/GetData',
-        columns: [
-        { data: 'id' },
-        { data: 'name' },
-        { data: 'professorName' }
-        ]
-        });
+        $('#disciplines-table').dataTable({
+            ajax: { url: '/Disciplines/GetData',
+                /*dataSrc: function (data) {
+                    debugger;
+                    console.log(data);
+                    aData = data;
+                }*/
+                dataSrc: 'Data'
+            },
+            columns: [
+            { data: 'IdDiscipline' },
+            { data: 'Name' },
+            { data: 'ProfessorName' },
+            { data: 'Score' },
+            {
+            data: null,
+            className: "center",
+            defaultContent: '<a href="" class="editor_remove">Delete</a>'
+            }
+            ]
+            });
     });
 </script>
