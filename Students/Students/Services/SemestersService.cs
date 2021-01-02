@@ -41,7 +41,13 @@ namespace Students.Services
                             semester.Disciplines = new List<Discipline>();
                             result.Add(semester);
                         }
-                        semester.Disciplines.Add(new Discipline((int)reader.GetValue(3), reader.GetValue(4).ToString(), reader.GetValue(5).ToString(), (float?)reader.GetValue(6)));
+                        var discipline = new Discipline((int)reader.GetValue(3), reader.GetValue(4).ToString(), reader.GetValue(5).ToString());
+                        float score;
+                        if (float.TryParse(reader.GetValue(6).ToString(), System.Globalization.NumberStyles.Float, null, out score))
+                        {
+                            discipline.Score = score;
+                        }
+                        semester.Disciplines.Add(discipline);
                     }
 
                 }

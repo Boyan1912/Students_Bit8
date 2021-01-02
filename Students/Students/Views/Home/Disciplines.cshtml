@@ -7,7 +7,7 @@
 
 <div class="row">
     <div class="col-12">
-        <table id="disciplines-table">
+        <table id="disciplines-table" class="table table-striped">
             <thead>
                 <tr>
                     <th>Id</th>
@@ -34,7 +34,7 @@
 </div>
 
 <script>
-    $(document).ready(function(){
+    $(document).ready(function() {
         var table = $('#disciplines-table').DataTable({
             ajax: { 
                 url: '/Disciplines/GetData',
@@ -62,7 +62,7 @@
                 defaultContent: '<a href="" class="editor_remove btn btn-danger">Delete</a>'
             }
             ]
-            });
+        });
 
         
         $('#disciplines-table tbody').on('click', 'tr', function (e) {
@@ -70,7 +70,7 @@
             var row = table.row(this);
             var discipline = row.data();
             if ($(e.target).hasClass('editor_remove')) {
-                if (discipline.Score > 0) {
+                if (!!discipline.Score) {
                     alert("Only disciplines without scores can be deleted!")
                 }
                 else {

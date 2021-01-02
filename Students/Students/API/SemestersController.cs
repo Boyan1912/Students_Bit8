@@ -28,8 +28,8 @@ namespace Students.API
 
             try
             {
-                var disciplines = await _service.GetAll();
-                result.Data = disciplines;
+                var semesters = await _service.GetAll();
+                result.Data = semesters;
             }
             catch (Exception ex)
             {

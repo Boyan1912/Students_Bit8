@@ -3,5 +3,67 @@
     ViewData["Title"] = "Semesters";
 }
 
-<h1>Semesters</h1>
+<h1>@ViewData["Title"]</h1>
 
+<p>View and edit semesters</p>
+
+<div class="row">
+    <div class="col-12">
+        <table id="semesters-table" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Disciplines</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Disciplines</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        var table = $('#semesters-table').DataTable({
+            ajax: { 
+                url: '/Semesters/GetData',
+                dataSrc: function (data) {
+                    if (!!data.ErrorMessage) {
+                        console.error(data.ErrorMessage);
+                    }
+                    debugger;
+                    return data.Data;
+                }
+            },
+            columns: [
+            { data: 'IdSemester' },
+            { data: 'Name' },
+            { 
+                data: 'Disciplines',
+                //render: "[, ]"
+                //render: "[</br>].Name"
+                render: function ( data, type, row, meta ) {
+                    var result = '';
+                        $.each(row.Disciplines, function( index, value ) {
+                          result = result + ('<div class="row">' +
+                                //'<div class="col-3">' + value.IdDiscipline + '</div>' + 
+                                '<div class="col-3">' + value.Name + '</div>' + 
+                                '<div class="col-3">' + value.ProfessorName + '</div>' + 
+                                '<div class="col-3">' + value.Score + '</div>' + 
+                            '</div>');
+                        });
+                        return result;
+                }
+            }
+            ]
+        });
+    })
+</script>
