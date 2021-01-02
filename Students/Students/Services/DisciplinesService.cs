@@ -29,10 +29,10 @@ namespace Students.Services
                 {
                     while (await reader.ReadAsync())
                     {
-                        var discipline = new Discipline();
-                        discipline.IdDiscipline = (int)reader.GetValue(0);
-                        discipline.Name = reader.GetValue(1).ToString();
-                        discipline.ProfessorName = reader.GetValue(2).ToString();
+                        var discipline = new Discipline((int)reader.GetValue(0), reader.GetValue(1).ToString(), reader.GetValue(2).ToString());
+                        //discipline.IdDiscipline = (int)reader.GetValue(0);
+                        //discipline.Name = reader.GetValue(1).ToString();
+                        //discipline.ProfessorName = reader.GetValue(2).ToString();
                         float score;
                         if (float.TryParse(reader.GetValue(3).ToString(), System.Globalization.NumberStyles.Float, null, out score))
                         {
