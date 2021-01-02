@@ -26,12 +26,29 @@ namespace Students.API
         [HttpGet("Disciplines/GetData")]
         public async Task<IActionResult> GetData()
         {
-            var result = new GridResultModel<Discipline>();
+            var result = new ApiResultModel<Discipline>();
 
             try
             {
                 var disciplines = await _service.GetAll();
                 result.Data = disciplines;
+            }
+            catch (Exception ex)
+            {
+                result.ErrorMessage = ex.Message;
+            }
+
+            return new JsonResult(result);
+        }
+
+        [HttpDelete("Disciplines/Delete")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = new ApiResultModel<object>();
+            try
+            {
+                await _service.Delete(id);
+                result.Message = "Success";
             }
             catch (Exception ex)
             {

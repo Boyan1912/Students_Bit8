@@ -35,7 +35,7 @@
 
 <script>
     $(document).ready(function(){
-        $('#disciplines-table').dataTable({
+        var table = $('#disciplines-table').DataTable({
             ajax: { 
                 url: '/Disciplines/GetData',
                 dataSrc: function (data) {
@@ -52,7 +52,7 @@
             { 
                 data: 'ProfessorName',
                 render: function ( data, type, row, meta ) {
-                  return data + ' <a href="">Edit</a>';
+                  return data + ' <a href="" class="editor_edit">Edit</a>';
                 }
             },
             { data: 'Score' },
@@ -64,9 +64,39 @@
             ]
             });
 
-        $('#disciplines-table').on('click', 'a.editor_remove', function (e) {
+        
+        $('#disciplines-table tbody').on('click', 'tr', function (e) {
             e.preventDefault();
- 
+            if (e.target.className == 'editor_remove') {
+                var row = table.row(this);
+                var discipline = row.data();
+                if (discipline.Score > 0) {
+                    alert("Only disciplines without scores can be deleted!")
+                }
+                else {
+                    $.ajax({
+                      url: "/Disciplines/Delete?id=" + discipline.IdDiscipline,
+                      method: "DELETE"
+                    })
+                    .done(function( res ) {
+                        if (!!res.ErrorMessage) {
+                            alert(res.ErrorMessage);
+                        }
+                        else {
+                            row.remove().draw();
+                        }
+                      })
+                    .fail(function(err) {
+                        console.error(err.responseText);
+                        alert( "Error deleting discipline!");
+                      })
+                }
+            }
+            else if (e.target.className == 'editor_edit') {
+
+            }
+
+
         } );
 
     });

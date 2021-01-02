@@ -48,5 +48,17 @@ namespace Students.Services
 
             return result;
         }
+
+        public async Task Delete(int id)
+        {
+            using var connection = new MySqlConnection(_connString);
+            {
+                await connection.OpenAsync();
+
+                using var command = new MySqlCommand("DELETE FROM discipline WHERE id_discipline = " + id, connection);
+                await command.ExecuteScalarAsync();
+                await connection.CloseAsync();
+            }
+        }
     }
 }

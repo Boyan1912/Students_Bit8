@@ -9,5 +9,6 @@ namespace Students.Services
     public interface IDisciplinesService
     {
         Task<List<Discipline>> GetAll();
+        Task Delete(int id);
     }
 }
