@@ -36,7 +36,6 @@ namespace Students.Services
                         discipline.Score = (float)reader.GetValue(3);
 
                         result.Add(discipline);
-                        // do something with 'value'
                     }
                     
                 }

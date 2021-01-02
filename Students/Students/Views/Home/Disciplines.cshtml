@@ -37,17 +37,17 @@
     $(document).ready(function(){
         $('#disciplines-table').dataTable({
             ajax: { url: '/Disciplines/GetData',
-                /*dataSrc: function (data) {
-                    debugger;
-                    console.log(data);
-                    aData = data;
-                }*/
                 dataSrc: 'Data'
             },
             columns: [
             { data: 'IdDiscipline' },
             { data: 'Name' },
-            { data: 'ProfessorName' },
+            { 
+                data: 'ProfessorName',
+                render: function ( data, type, row, meta ) {
+                  return data + ' <a href="">Edit</a>';
+                }
+            },
             { data: 'Score' },
             {
             data: null,

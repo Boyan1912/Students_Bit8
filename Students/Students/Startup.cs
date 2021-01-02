@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MySqlConnector;
+using Students.Services;
 
 namespace Students
 {
@@ -29,7 +30,10 @@ namespace Students
             })
                 .AddXmlSerializerFormatters();
 
-            services.AddTransient<MySqlConnection>(_ => new MySqlConnection(Configuration["ConnectionStrings:Default"]));
+            string connectionString = Configuration["ConnectionStrings:Default"];
+
+            services.AddTransient<MySqlConnection>(_ => new MySqlConnection(connectionString));
+            services.AddScoped<IDisciplinesService>(provider => new DisciplinesService(connectionString));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

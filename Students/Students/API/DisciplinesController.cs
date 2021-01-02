@@ -15,18 +15,18 @@ namespace Students.API
     public class DisciplinesController : ControllerBase
     {
         private readonly IConfiguration _config;
-        private readonly IDisciplinesService service;
+        private readonly IDisciplinesService _service;
 
-        public DisciplinesController(IConfiguration config)
+        public DisciplinesController(IConfiguration config, IDisciplinesService service)
         {
             _config = config;
-            service = new DisciplinesService(_config.GetValue<string>("ConnectionStrings:Default"));
+            _service = service;
         }
 
         [HttpGet("Disciplines/GetData")]
         public async Task<IActionResult> GetData()
         {
-            var disciplines = await service.GetAll();
+            var disciplines = await _service.GetAll();
             var result = new GridResultModel<Discipline>()
             {
                  Data = disciplines
