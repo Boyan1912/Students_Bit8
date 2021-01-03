@@ -75,7 +75,7 @@ function onDatatableDataLoad (data) {
 
 function renderDisciplineInTableCell(result, semester, index, value) {
     if (index === 0) {
-        result = result + '<br/>';
+        result = result + '<p class="font-italic text-info" style="margin-top:10px;">Disciplines for ' +  semester.Name + '</p>';
     }
     var deleteBtnId = 'delete-btn-' + value.IdDiscipline;
     var addBtnId = 'add-btn-' + value.IdDiscipline;
