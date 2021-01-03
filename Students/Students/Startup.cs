@@ -35,6 +35,7 @@ namespace Students
             services.AddTransient<MySqlConnection>(_ => new MySqlConnection(connectionString));
             services.AddScoped<IDisciplinesService>(provider => new DisciplinesService(connectionString));
             services.AddScoped<ISemestersService>(provider => new SemestersService(connectionString));
+            services.AddScoped<IStudentsService>(provider => new StudentsService(connectionString));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
