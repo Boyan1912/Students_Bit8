@@ -64,3 +64,12 @@ function editDiscipline(discipline, btn) {
         })
     }
 }
+
+function addDiscipline(semesterId, addDisciplineFormId, addDisciplineBtnId) {
+    
+    debugger;
+}
+
+
+
+

@@ -69,3 +69,19 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+
+
+#panel-overlay {
+    /* set it to fill the whole panel */
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    opacity: 0.5;
+    background: #000;
+}
+
+.panel {
+    position: relative;
+}

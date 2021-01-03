@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Students.Models;
 using Students.Services;
@@ -66,6 +67,22 @@ namespace Students.API
             {
                 await _service.UpdateProfessorName(id, professor);
                 result.Message = "Success";
+            }
+            catch (Exception ex)
+            {
+                result.ErrorMessage = ex.Message;
+            }
+
+            return Ok(result);
+        }
+
+        [HttpPost("Disciplines/Create")]
+        public async Task<IActionResult> Create([FromQuery] int semesterId, [FromQuery] string name, [FromQuery] string professor, [FromQuery] float? score = null)
+        {
+            var result = new ApiResultModel<object>();
+            try
+            {
+                
             }
             catch (Exception ex)
             {
