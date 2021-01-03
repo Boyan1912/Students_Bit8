@@ -3,6 +3,7 @@ using Students.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -72,6 +73,20 @@ namespace Students.Services
                     "UPDATE discipline " +
                     "SET professor_name = '" + professorName + "'" +
                     " WHERE id_discipline = " + id, connection);
+                await command.ExecuteScalarAsync();
+                await connection.CloseAsync();
+            }
+        }
+
+        public async Task Create(string name, string professorName, int semesterId, float? score = null)
+        {
+            using var connection = new MySqlConnection(_connString);
+            {
+                await connection.OpenAsync();
+                string scoreStr = score.HasValue ? score.ToString().Replace(",",".") : "null";
+                using var command = new MySqlCommand(
+                    "INSERT INTO discipline (name, professor_name, score, id_semester)  " +
+                    "VALUES('" + name + "','" + professorName + "'," + scoreStr + "," + semesterId + ")", connection); 
                 await command.ExecuteScalarAsync();
                 await connection.CloseAsync();
             }

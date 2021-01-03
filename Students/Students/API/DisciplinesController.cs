@@ -82,7 +82,8 @@ namespace Students.API
             var result = new ApiResultModel<object>();
             try
             {
-                
+                 await _service.Create(name, professor, semesterId, score);
+                result.Message = "Success";
             }
             catch (Exception ex)
             {
