@@ -39,7 +39,7 @@
                     if (!!data.ErrorMessage) {
                         console.error(data.ErrorMessage);
                     }
-                    debugger;
+                    
                     return data.Data;
                 }
             },
@@ -48,8 +48,6 @@
             { data: 'Name' },
             { 
                 data: 'Disciplines',
-                //render: "[, ]"
-                //render: "[</br>].Name"
                 render: function ( data, type, row, meta ) {
                     var result = '';
                         $.each(row.Disciplines, function( index, value ) {
@@ -57,15 +55,12 @@
                                 result = result + '<br/>';
                             }
                             var deleteBtnId = 'delete-btn-' + value.IdDiscipline;
-                          result = result + ('<div class="row">' +
-                                //'<div class="col-3">' + value.IdDiscipline + '</div>' + 
+                            result = result + ('<div class="row">' +
                                 '<div class="col-3">' + value.Name + '</div>' + 
                                 '<div class="col-3">' + value.ProfessorName + '</div>' + 
                                 '<div class="col-3">' + value.Score + '</div>' + 
                                 '<div class="col-3"><button type="button" id="' + deleteBtnId + '">Delete</button></div>' + 
                               '</div>');
-
-                            //result = result + '</div>';
 
                             $('#' + deleteBtnId).on('click', function(e) {
                                 deleteDiscipline(value); // in site.js
