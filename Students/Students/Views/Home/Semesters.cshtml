@@ -38,13 +38,7 @@
         var tableSemesters = $('#semesters-table').DataTable({
             ajax: { 
                 url: '/Semesters/GetData',
-                dataSrc: function (data) {
-                    if (!!data.ErrorMessage) {
-                        console.error(data.ErrorMessage);
-                    }
-                    
-                    return data.Data;
-                }
+                dataSrc: onDatatableDataLoad, // in site.js
             },
             columns: [
             { data: 'IdSemester' },

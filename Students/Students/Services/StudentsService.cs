@@ -49,6 +49,7 @@ namespace Students.Services
                             semester = new Semester();
                             semester.IdSemester = idSemester;
                             semester.Name = reader.GetValue(5).ToString();
+                            semester.Disciplines = new List<Discipline>();
                             student.Semesters.Add(semester);
                         }
                         int idDiscipline = (int)reader.GetValue(6);

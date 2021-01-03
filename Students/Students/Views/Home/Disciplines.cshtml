@@ -38,13 +38,7 @@
         var table = $('#disciplines-table').DataTable({
             ajax: { 
                 url: '/Disciplines/GetData',
-                dataSrc: function (data) {
-                    if (!!data.ErrorMessage) {
-                        console.error(data.ErrorMessage);
-                    }
-
-                    return data.Data;
-                }
+                dataSrc: onDatatableDataLoad, // in site.js
             },
             columns: [
             { data: 'IdDiscipline' },

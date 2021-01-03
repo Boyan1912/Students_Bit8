@@ -65,11 +65,14 @@ function editDiscipline(discipline, btn) {
     }
 }
 
-function addDiscipline(semesterId, addDisciplineFormId, addDisciplineBtnId) {
-    
+function onDatatableDataLoad (data) {
     debugger;
+    if (!!data.ErrorMessage) {
+        console.error(data.ErrorMessage);
+    }
+    
+    return data.Data;
 }
-
 
 
 

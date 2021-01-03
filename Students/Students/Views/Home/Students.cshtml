@@ -3,5 +3,51 @@
     ViewData["Title"] = "Students";
 }
 
-<h1>Students</h1>
+<h1>@ViewData["Title"]</h1>
 
+<p>View and edit semesters</p>
+
+<div class="row">
+    <div class="col-12">
+        <table id="students-table" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Semesters</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Id</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Semesters</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        var tableStudents = $('#students-table').DataTable({
+            ajax: { 
+                url: '/Students/GetData',
+                dataSrc: onDatatableDataLoad, // in site.js
+            },
+            columns: [
+                { data: 'IdStudent' },
+                { data: 'FirstName' },
+                { data: 'LastName' },
+                {
+                    data: 'Semesters',
+                    render: '[</br>].Name'
+                }
+            ]
+        });
+    })
+</script>
