@@ -140,3 +140,26 @@ function renderDisciplineInTableCell(result, semester, index, value) {
     return result;
 }
 
+function postCreateSemester(studentId, semesterName) {
+    var postUrl = "/Semesters/Create?name=" + semesterName;
+    if (studentId) {
+        postUrl += "&studentId=" + studentId
+    }
+    $.ajax({
+        url: postUrl,
+        method: "POST",
+        contentType: 'application/json'
+    })
+    .done(function(res) { 
+        if (!!res.ErrorMessage) {
+            alert(res.ErrorMessage);
+        }
+        else {
+            location.reload(true);
+        }    
+    })
+    .fail(function(err){
+        console.error(err.responseText);
+        alert('Error creating semester');  
+    });
+}

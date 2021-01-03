@@ -40,7 +40,7 @@ namespace Students.API
         }
 
         [HttpPost("Semesters/Create")]
-        public async Task<IActionResult> Create([FromQuery] int studentId, [FromQuery] string name)
+        public async Task<IActionResult> Create([FromQuery] string name, [FromQuery] int? studentId)
         {
             var result = new ApiResultModel<object>();
             try

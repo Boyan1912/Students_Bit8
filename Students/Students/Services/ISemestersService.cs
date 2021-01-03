@@ -9,6 +9,6 @@ namespace Students.Services
     public interface ISemestersService
     {
         Task<List<Semester>> GetAll();
-        Task Create(int studentId, string name);
+        Task Create(int? studentId, string name);
     }
 }

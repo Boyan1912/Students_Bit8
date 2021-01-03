@@ -57,14 +57,15 @@ namespace Students.Services
             return result;
         }
 
-        public async Task Create(int studentId, string name)
+        public async Task Create(int? studentId, string name)
         {
             using var connection = new MySqlConnection(_connString);
             {
                 await connection.OpenAsync();
+                string studIdStr = studentId.HasValue ? studentId.ToString() : "null";
                 using var command = new MySqlCommand(
                     "INSERT INTO mydb.semester(name, id_student) " +
-                    "VALUES('" + name + "'," + studentId + ")", connection);
+                    "VALUES('" + name + "'," + studIdStr + ")", connection);
                 await command.ExecuteScalarAsync();
                 await connection.CloseAsync();
             }

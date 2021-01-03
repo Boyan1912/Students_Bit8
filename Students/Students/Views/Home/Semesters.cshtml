@@ -7,6 +7,21 @@
 
 <p>View and edit semesters</p>
 
+<div class="row" style="padding: 15px;">
+    <button type="button" class="btn btn-primary" id="add-semester-btn">Add Semester</button>
+</div>
+<div class="row">
+    <div class="col-4" style="padding-bottom: 15px;">
+        <form id="add-new-semester-form" style="display:none">
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" class="form-control" name="name" placeholder="Semester name">
+            </div>
+            <button type="button" id="add-new-semester-btn" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-12">
         <table id="semesters-table" class="table table-striped">
@@ -14,7 +29,6 @@
                 <tr>
                     <th>Id</th>
                     <th>Name</th>
-                    @*<th>Add</th>*@
                     <th>Disciplines</th>
                 </tr>
             </thead>
@@ -24,7 +38,6 @@
                 <tr>
                     <th>Id</th>
                     <th>Name</th>
-                    @*<th>Add</th>*@
                     <th>Disciplines</th>
                 </tr>
             </tfoot>
@@ -35,6 +48,15 @@
 
 <script>
     $(document).ready(function() {
+        $('#add-semester-btn').on('click', function(e) {
+            $('#add-new-semester-form').show();
+        });
+
+        $('#add-new-semester-btn').on('click', function (e) {
+            var semesterName = $('#add-new-semester-form input[name="name"]').val();
+            postCreateSemester(null, semesterName);
+        });
+
         var tableSemesters = $('#semesters-table').DataTable({
             ajax: { 
                 url: '/Semesters/GetData',
@@ -43,11 +65,6 @@
             columns: [
             { data: 'IdSemester' },
             { data: 'Name' },
-            /*{
-                data: null,
-                className: "center",
-                defaultContent: '<a class="editor_add btn btn-success">Add</a>'
-            },*/
             { 
                 data: 'Disciplines',
                 render: function ( data, type, row, meta ) {

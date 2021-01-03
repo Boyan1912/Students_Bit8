@@ -82,29 +82,10 @@
                                 });
                                 $('#' + addSemesterBtnId).on('click', function(e) {
                                     var semesterName = $('#' + addSemesterFormId + ' input[name="name"]').val();
-                                
-                                    $.ajax({
-                                        url: "/Semesters/Create?studentId=" + row.IdStudent + "&name=" + semesterName,
-                                        method: "POST",
-                                        contentType: 'application/json'
-                                    })
-                                    .done(function(res) { 
-                                        if (!!res.ErrorMessage) {
-                                            alert(res.ErrorMessage);
-                                        }
-                                        else {
-                                            location.reload(true);
-                                        }    
-                                    })
-                                    .fail(function(err){
-                                        console.error(err.responseText);
-                                        alert('Error creating semester');  
-                                    });
-                                
+                                    postCreateSemester(row.IdStudent, semesterName); // in site.js
                                 });
                             }
 
-                            
                             $.each(value.Disciplines, function( i, val ) {
                                 result = renderDisciplineInTableCell(result, value, i, val); // in site.js
                             })
