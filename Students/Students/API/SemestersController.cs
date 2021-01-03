@@ -38,5 +38,22 @@ namespace Students.API
 
             return new JsonResult(result);
         }
+
+        [HttpPost("Semesters/Create")]
+        public async Task<IActionResult> Create([FromQuery] int studentId, [FromQuery] string name)
+        {
+            var result = new ApiResultModel<object>();
+            try
+            {
+                await _service.Create(studentId, name);
+                result.Message = "Success";
+            }
+            catch (Exception ex)
+            {
+                result.ErrorMessage = ex.Message;
+            }
+
+            return Ok(result);
+        }
     }
 }

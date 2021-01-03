@@ -56,5 +56,19 @@ namespace Students.Services
 
             return result;
         }
+
+        public async Task Create(int studentId, string name)
+        {
+            using var connection = new MySqlConnection(_connString);
+            {
+                await connection.OpenAsync();
+                using var command = new MySqlCommand(
+                    "INSERT INTO mydb.semester(name, id_student) " +
+                    "VALUES('" + name + "'," + studentId + ")", connection);
+                await command.ExecuteScalarAsync();
+                await connection.CloseAsync();
+            }
+        }
+
     }
 }
