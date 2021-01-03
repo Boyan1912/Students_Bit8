@@ -40,63 +40,79 @@
                 dataSrc: onDatatableDataLoad, // in site.js
             },
             columns: [
-                { data: 'IdStudent' },
-                { data: 'FirstName' },
-                { data: 'LastName' },
+                { 
+                    data: 'IdStudent',
+                    width: '5%'
+                },
+                { 
+                    data: 'FirstName',
+                    width: '20%'
+                },
+                { 
+                    data: 'LastName',
+                    width: '20%'
+                },
                 {
                     data: 'Semesters',
+                    width: '55%',
                     render: function ( data, type, row, meta ) {
-                    var result = '';
-                    $.each(row.Semesters, function( index, value ) {
-                        if (index === 0) {
-                            result = result + '<br/>';
-                        }
-                        var addBtnId = 'add-btn-' + value.IdSemester;
-                        var addSemesterFormId = 'add-form-' + row.IdStudent;
-                        var addSemesterBtnId = 'add-discipline-btn-' + row.IdStudent;
-                        result = result + ('<div class="row">' +
-                            '<div class="col-12">' + value.Name + '</div>' + 
-                            '</div>');
+                        var result = '';
+                        $.each(row.Semesters, function( index, value ) {
+                            if (index === 0) {
+                                result = result + '<br/>';
+                            }
+                            var addBtnId = 'add-btn-' + value.IdSemester;
+                            var addSemesterFormId = 'add-form-' + row.IdStudent;
+                            var addSemesterBtnId = 'add-semester-btn-' + row.IdStudent;
+                            result = result + ('<div class="row">' +
+                                '<div class="col-12">' + value.Name + '</div>' + 
+                                '</div>');
 
-                        if (index === row.Semesters.length - 1) {
-                            result = result + '<div class="row add-btn-wrapper" style="padding-left:10px;"><button class="col-5 btn btn-success btn-sm" type="button" id="' + addBtnId + '">Add Semester</button></div>';
-                            result = result + '<form id="' + addSemesterFormId + '" style="display:none" >' +
-                                                        '<div class="form-group">' +
-                                                            '<label>Name</label>' +
-                                                            '<input type="text" class="form-control" name="name" placeholder="Semester name">' +
-                                                        '</div>' + 
-                                                        '<button type="button" id="' + addSemesterBtnId + '" class="btn btn-primary">Submit</button>' +
-                                                    '</form>';
-                            $('#' + addBtnId).on('click', function(e) {
-                                $('#' + addSemesterFormId).show();
-                            });
-                            $('#' + addSemesterBtnId).on('click', function(e) {
-                                var semesterName = $('#' + addSemesterFormId + ' input[name="name"]').val();
-                                
-                                $.ajax({
-                                    url: "/Semesters/Create?studentId=" + row.IdStudent + "&name=" + semesterName,
-                                    method: "POST",
-                                    contentType: 'application/json'
-                                })
-                                .done(function(res) { 
-                                    if (!!res.ErrorMessage) {
-                                        alert(res.ErrorMessage);
-                                    }
-                                    else {
-                                        location.reload(true);
-                                    }    
-                                })
-                                .fail(function(err){
-                                    console.error(err.responseText);
-                                    alert('Error creating semester');  
+                            if (index === row.Semesters.length - 1) {
+                                result = result + '<div class="row add-btn-wrapper" style="padding-left:10px;"><button class="col-5 btn btn-warning btn-sm" type="button" id="' + addBtnId + '">Add Semester</button></div>';
+                                result = result + '<form id="' + addSemesterFormId + '" style="display:none" >' +
+                                                            '<div class="form-group">' +
+                                                                '<label>Name</label>' +
+                                                                '<input type="text" class="form-control" name="name" placeholder="Semester name">' +
+                                                            '</div>' + 
+                                                            '<button type="button" id="' + addSemesterBtnId + '" class="btn btn-primary">Submit</button>' +
+                                                        '</form>';
+                                $('#' + addBtnId).on('click', function(e) {
+                                    $('#' + addSemesterFormId).show();
                                 });
+                                $('#' + addSemesterBtnId).on('click', function(e) {
+                                    var semesterName = $('#' + addSemesterFormId + ' input[name="name"]').val();
                                 
-                            });
-                        }
-                    });
+                                    $.ajax({
+                                        url: "/Semesters/Create?studentId=" + row.IdStudent + "&name=" + semesterName,
+                                        method: "POST",
+                                        contentType: 'application/json'
+                                    })
+                                    .done(function(res) { 
+                                        if (!!res.ErrorMessage) {
+                                            alert(res.ErrorMessage);
+                                        }
+                                        else {
+                                            location.reload(true);
+                                        }    
+                                    })
+                                    .fail(function(err){
+                                        console.error(err.responseText);
+                                        alert('Error creating semester');  
+                                    });
+                                
+                                });
+                            }
 
-                    return result;
-                }
+                            
+                            $.each(value.Disciplines, function( i, val ) {
+                                result = renderDisciplineInTableCell(result, value, i, val); // in site.js
+                            })
+
+                        }); // each semester
+
+                        return result;
+                    }
                 }
             ]
         });
