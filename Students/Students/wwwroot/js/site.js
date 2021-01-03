@@ -1,5 +1,4 @@
 ﻿function deleteDiscipline(discipline, row) {
-    debugger;
     if (!!discipline.Score) {
         alert("Only disciplines without scores can be deleted!")
     }

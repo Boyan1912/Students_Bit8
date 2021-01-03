@@ -30,9 +30,6 @@ namespace Students.Services
                     while (await reader.ReadAsync())
                     {
                         var discipline = new Discipline((int)reader.GetValue(0), reader.GetValue(1).ToString(), reader.GetValue(2).ToString());
-                        //discipline.IdDiscipline = (int)reader.GetValue(0);
-                        //discipline.Name = reader.GetValue(1).ToString();
-                        //discipline.ProfessorName = reader.GetValue(2).ToString();
                         float score;
                         if (float.TryParse(reader.GetValue(3).ToString(), System.Globalization.NumberStyles.Float, null, out score))
                         {
@@ -55,6 +52,11 @@ namespace Students.Services
             {
                 await connection.OpenAsync();
 
+                if (!await CanBeDeleted(id, connection))
+                {
+                    throw new ArgumentException("Only disciplines without scores can be deleted!");
+                }
+
                 using var command = new MySqlCommand("DELETE FROM discipline WHERE id_discipline = " + id, connection);
                 await command.ExecuteScalarAsync();
                 await connection.CloseAsync();
@@ -73,6 +75,22 @@ namespace Students.Services
                 await command.ExecuteScalarAsync();
                 await connection.CloseAsync();
             }
+        }
+
+        private async Task<bool> CanBeDeleted(int id, MySqlConnection connection)
+        {
+                using var command = new MySqlCommand("SELECT score FROM discipline WHERE id_discipline = " + id, connection);
+                using var reader = await command.ExecuteReaderAsync();
+                {
+                    await reader.ReadAsync();
+                    float score;
+                    if (float.TryParse(reader.GetValue(0).ToString(), System.Globalization.NumberStyles.Float, null, out score))
+                    {
+                        return false;
+                    }
+                }
+        
+            return true;
         }
     }
 }
