@@ -42,12 +42,13 @@ namespace Students.API
         [HttpGet("Students/GetTopTen")]
         public async Task<IActionResult> GetTopTen()
         {
-            var result = new ApiResultModel<Student>();
+            var result = new ApiResultModel<SummaryStudentModel>();
 
             try
             {
-                var semesters = await _service.GetAll();
-                result.Data = semesters;
+                var students = await _service.GetTopTen();
+                result.Data = students;
+                result.Message = "Success";
             }
             catch (Exception ex)
             {

@@ -15,7 +15,7 @@
                     <th>Id</th>
                     <th>First Name</th>
                     <th>Surname</th>
-                    <th>Semesters</th>
+                    <th>Average Score</th>
                 </tr>
             </thead>
             <tbody>
@@ -25,7 +25,7 @@
                     <th>Id</th>
                     <th>First Name</th>
                     <th>Surname</th>
-                    <th>Semesters</th>
+                    <th>Average Score</th>
                 </tr>
             </tfoot>
         </table>
@@ -34,7 +34,18 @@
 
 <script>
     $(document).ready(function () {
-        var tableTopStudents = $('#top-ten-students-table')
-            .DataTable(getStudentsDatatableOptions('/Students/GetTopTen'));
+        var tableTopStudents = $('#top-ten-students-table').DataTable({
+            ajax: {
+                url: '/Students/GetTopTen',
+                dataSrc: onDatatableDataLoad, // in site.js
+            },
+            columns: [
+                { data: 'IdStudent' },
+                { data: 'FirstName' },
+                { data: 'LastName' },
+                { data: 'AvgScore' }
+            ],
+            order: [[ 3, "desc" ]]
+        });
     });
 </script>
