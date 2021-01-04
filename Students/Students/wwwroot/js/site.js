@@ -75,7 +75,8 @@ function onDatatableDataLoad (data) {
 
 function renderDisciplineInTableCell(result, semester, index, value) {
     if (index === 0) {
-        result = result + '<p class="font-italic text-info" style="margin-top:10px;">Disciplines for ' +  semester.Name + '</p>';
+        result = result + '<p class="font-italic text-info" style="margin-top:10px;">Disciplines for ' +  semester.Name + ':</p>';
+        result = result + '<div class="row"><div class="col-3 font-weight-bold">Name</div><div class="col-3 font-weight-bold">Professor</div><div class="col-3 font-weight-bold">Score</div></div>';
     }
     var deleteBtnId = 'delete-btn-' + value.IdDiscipline;
     var addBtnId = 'add-btn-' + value.IdDiscipline;
@@ -182,15 +183,15 @@ function getStudentsDatatableOptions(sourceUrl) {
                 },
                 { 
                     data: 'FirstName',
-                    width: '20%'
+                    width: '15%'
                 },
                 { 
                     data: 'LastName',
-                    width: '20%'
+                    width: '15%'
                 },
                 {
                     data: 'Semesters',
-                    width: '55%',
+                    width: '65%',
                     render: function ( data, type, row, meta ) {
                         var result = '';
                         $.each(row.Semesters, function( index, value ) {
