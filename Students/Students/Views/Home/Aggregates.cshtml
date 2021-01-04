@@ -1,20 +1,20 @@
 ﻿
 @{
-    ViewData["Title"] = "Students";
+    ViewData["Title"] = "Aggregates";
 }
 
 <h1>@ViewData["Title"]</h1>
 
-<p>View and edit semesters</p>
+<p>Aggregated Data</p>
 
 <div class="row">
     <div class="col-12">
-        <table id="students-table" class="table table-striped">
+        <table id="top-ten-students-table" class="table table-striped">
             <thead>
                 <tr>
                     <th>Id</th>
                     <th>First Name</th>
-                    <th>Last Name</th>
+                    <th>Surname</th>
                     <th>Semesters</th>
                 </tr>
             </thead>
@@ -24,7 +24,7 @@
                 <tr>
                     <th>Id</th>
                     <th>First Name</th>
-                    <th>Last Name</th>
+                    <th>Surname</th>
                     <th>Semesters</th>
                 </tr>
             </tfoot>
@@ -33,9 +33,8 @@
 </div>
 
 <script>
-    $(document).ready(function() {
-        var tableStudents = $('#students-table').DataTable(
-        getStudentsDatatableOptions('/Students/GetData') // in site.js
-        );
-    })
+    $(document).ready(function () {
+        var tableTopStudents = $('#top-ten-students-table')
+            .DataTable(getStudentsDatatableOptions('/Students/GetData'));
+    });
 </script>
