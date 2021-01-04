@@ -116,8 +116,16 @@ function renderDisciplineInTableCell(result, semester, index, value) {
             var profName = $('#' + addDisciplineFormId + ' input[name="professor"]').val();
             var score = $('#' + addDisciplineFormId + ' input[name="score"]').val();
                                 
-            $.ajax({
-                url: "/Disciplines/Create?semesterId=" + semester.IdSemester + "&name=" + discName + "&professor=" + profName + "&score=" + score,
+            postCreateDiscipline(semester.IdSemester, discName, profName, score)
+        });
+    }
+
+    return result;
+}
+
+function postCreateDiscipline(semesterId, disciplineName, professorName, score) {
+    $.ajax({
+                url: "/Disciplines/Create?semesterId=" + semesterId + "&name=" + disciplineName + "&professor=" + professorName + "&score=" + score,
                 method: "POST",
                 contentType: 'application/json'
             })
@@ -133,11 +141,7 @@ function renderDisciplineInTableCell(result, semester, index, value) {
                 console.error(err.responseText);
                 alert('Error creating discipline');  
             });
-                                
-        });
-    }
-
-    return result;
+            
 }
 
 function postCreateSemester(studentId, semesterName) {

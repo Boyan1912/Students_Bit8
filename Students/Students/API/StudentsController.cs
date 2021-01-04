@@ -38,5 +38,23 @@ namespace Students.API
 
             return new JsonResult(result);
         }
+
+        [HttpGet("Students/GetTopTen")]
+        public async Task<IActionResult> GetTopTen()
+        {
+            var result = new ApiResultModel<Student>();
+
+            try
+            {
+                var semesters = await _service.GetAll();
+                result.Data = semesters;
+            }
+            catch (Exception ex)
+            {
+                result.ErrorMessage = ex.Message;
+            }
+
+            return new JsonResult(result);
+        }
     }
 }

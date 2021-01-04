@@ -9,5 +9,6 @@ namespace Students.Services
     public interface IStudentsService
     {
         Task<List<Student>> GetAll();
+        Task<List<Student>> GetTopTen();
     }
 }

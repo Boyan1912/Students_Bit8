@@ -5,6 +5,34 @@
 
 <p>View and edit disciplines</p>
 
+<div class="row" style="padding: 15px;">
+    <button type="button" class="btn btn-primary" id="add-discipline-btn">Add Discipline</button>
+</div>
+<div class="row">
+    <div class="col-4" style="padding-bottom: 15px;">
+        <form id="add-new-discipline-form" style="display:none">
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" class="form-control" name="name" placeholder="Discipline name">
+            </div>
+            <div class="form-group">
+                <label>Professor</label>
+                <input type="text" class="form-control" name="professor" placeholder="Professor name">
+            </div>
+            <div class="form-group">
+                <label>Score</label>
+                <input type="number" class="form-control" name="score" placeholder="Score">
+            </div>
+            <div class="form-group">
+                <label>Semester Id</label>
+                <input type="number" class="form-control" name="semester" placeholder="Semester Id">
+            </div>
+            <button type="button" id="add-new-discipline-btn" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+
+
 <div class="row">
     <div class="col-12">
         <table id="disciplines-table" class="table table-striped">
@@ -18,7 +46,6 @@
                 </tr>
             </thead>
             <tbody>
-                
             </tbody>
             <tfoot>
                 <tr>
@@ -34,31 +61,44 @@
 </div>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
+        $('#add-discipline-btn').on('click', function(e) {
+            $('#add-new-discipline-form').show();
+        });
+
+        $('#add-new-discipline-btn').on('click', function (e) {
+            var disciplineName = $('#add-new-discipline-form input[name="name"]').val();
+            var disciplineProf = $('#add-new-discipline-form input[name="professor"]').val();
+            var disciplineScore = $('#add-new-discipline-form input[name="score"]').val();
+            var semesterId = $('#add-new-discipline-form input[name="semester"]').val();
+            postCreateDiscipline(semesterId, disciplineName, disciplineProf, disciplineScore);
+        });
+
+
         var table = $('#disciplines-table').DataTable({
-            ajax: { 
+            ajax: {
                 url: '/Disciplines/GetData',
                 dataSrc: onDatatableDataLoad, // in site.js
             },
             columns: [
-            { data: 'IdDiscipline' },
-            { data: 'Name' },
-            { 
-                data: 'ProfessorName',
-                render: function ( data, type, row, meta ) {
-                  return '<div class="row"><input type="text" readonly="readonly" class="form-control col-7" value="' + data + '"/> <a href="" type="button" class="editor_edit btn btn-primary col-2">Edit</a></div>';
+                { data: 'IdDiscipline' },
+                { data: 'Name' },
+                {
+                    data: 'ProfessorName',
+                    render: function (data, type, row, meta) {
+                        return '<div class="row"><input type="text" readonly="readonly" class="form-control col-7" value="' + data + '"/> <a href="" type="button" class="editor_edit btn btn-primary col-2">Edit</a></div>';
+                    }
+                },
+                { data: 'Score' },
+                {
+                    data: null,
+                    className: "center",
+                    defaultContent: '<a href="" class="editor_remove btn btn-danger">Delete</a>'
                 }
-            },
-            { data: 'Score' },
-            {
-                data: null,
-                className: "center",
-                defaultContent: '<a href="" class="editor_remove btn btn-danger">Delete</a>'
-            }
             ]
         });
 
-        
+
         $('#disciplines-table tbody').on('click', 'tr', function (e) {
             e.preventDefault();
             var row = table.row(this);
