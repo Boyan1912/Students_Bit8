@@ -235,7 +235,30 @@ function getStudentsDatatableOptions(sourceUrl) {
         }
 }
 
-
+function deleteSemester(semester, row) {
+    if (semester.HasStudents) {
+        alert("Only semesters without any students can be deleted!")
+    }
+    else {
+        $.ajax({
+            url: "/Semesters/Delete?id=" + semester.IdSemester,
+            method: "DELETE",
+            contentType: 'application/json'
+        })
+        .done(function( res ) {
+            if (!!res.ErrorMessage) {
+                alert(res.ErrorMessage);
+            }
+            else {
+                row.remove().draw();
+            }
+        })
+        .fail(function(err) {
+            console.error(err.responseText);
+            alert( "Error deleting discipline!");
+        })
+    }
+}
 
 
 

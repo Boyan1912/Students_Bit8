@@ -55,5 +55,22 @@ namespace Students.API
 
             return Ok(result);
         }
+
+        [HttpDelete("Semesters/Delete")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = new ApiResultModel<object>();
+            try
+            {
+                await _service.Delete(id);
+                result.Message = "Success";
+            }
+            catch (Exception ex)
+            {
+                result.ErrorMessage = ex.Message;
+            }
+
+            return Ok(result);
+        }
     }
 }

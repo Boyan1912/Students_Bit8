@@ -10,5 +10,6 @@ namespace Students.Models
         public int IdSemester { get; set; }
         public string Name { get; set; }
         public List<Discipline> Disciplines { get; set; }
+        public bool HasStudents { get; set; }
     }
 }

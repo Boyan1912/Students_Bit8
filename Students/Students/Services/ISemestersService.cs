@@ -10,5 +10,6 @@ namespace Students.Services
     {
         Task<List<Semester>> GetAll();
         Task Create(int? studentId, string name);
+        Task Delete(int id);
     }
 }

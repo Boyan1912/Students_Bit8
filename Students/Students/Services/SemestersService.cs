@@ -41,6 +41,11 @@ namespace Students.Services
                             semester.Disciplines = new List<Discipline>();
                             result.Add(semester);
                         }
+                        int studentId;
+                        if (!semester.HasStudents && int.TryParse(reader.GetValue(1).ToString(), System.Globalization.NumberStyles.Integer, null, out studentId))
+                        {
+                            semester.HasStudents = true;
+                        }
                         var discipline = new Discipline((int)reader.GetValue(3), reader.GetValue(4).ToString(), reader.GetValue(5).ToString());
                         float score;
                         if (float.TryParse(reader.GetValue(6).ToString(), System.Globalization.NumberStyles.Float, null, out score))
@@ -71,5 +76,30 @@ namespace Students.Services
             }
         }
 
+        public async Task Delete(int id)
+        {
+            using var connection = new MySqlConnection(_connString);
+            {
+                await connection.OpenAsync();
+                if (!await CanBeDeleted(id, connection))
+                {
+                    throw new ArgumentException("Only semesters without any students can be deleted!");
+                }
+                using var command = new MySqlCommand("DELETE FROM semester WHERE id_semester = " + id, connection);
+                await command.ExecuteScalarAsync();
+                await connection.CloseAsync();
+            }
+        }
+
+        private async Task<bool> CanBeDeleted(int id, MySqlConnection connection)
+        {
+            using var command = new MySqlCommand("SELECT id_student FROM semester WHERE id_semester = " + id, connection);
+            using var reader = await command.ExecuteReaderAsync();
+            {
+                await reader.ReadAsync();
+                int studentId;
+                return !int.TryParse(reader.GetValue(0).ToString(), System.Globalization.NumberStyles.Integer, null, out studentId);
+            }
+        }
     }
 }

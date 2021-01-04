@@ -30,6 +30,7 @@
                     <th>Id</th>
                     <th>Name</th>
                     <th>Disciplines</th>
+                    <th>Delete</th>
                 </tr>
             </thead>
             <tbody>
@@ -39,6 +40,7 @@
                     <th>Id</th>
                     <th>Name</th>
                     <th>Disciplines</th>
+                    <th>Delete</th>
                 </tr>
             </tfoot>
         </table>
@@ -63,20 +65,34 @@
                 dataSrc: onDatatableDataLoad, // in site.js
             },
             columns: [
-            { data: 'IdSemester' },
-            { data: 'Name' },
-            { 
-                data: 'Disciplines',
-                render: function ( data, type, row, meta ) {
-                    var result = '';
-                    $.each(row.Disciplines, function( index, value ) {
-                        result = renderDisciplineInTableCell(result, row, index, value); // in site.js
-                    });
+                { data: 'IdSemester' },
+                { data: 'Name' },
+                { 
+                    data: 'Disciplines',
+                    render: function ( data, type, row, meta ) {
+                        var result = '';
+                        $.each(row.Disciplines, function( index, value ) {
+                            result = renderDisciplineInTableCell(result, row, index, value); // in site.js
+                        });
 
-                    return result;
+                        return result;
+                    }
+                },
+                {
+                    data: null,
+                    className: "center",
+                    defaultContent: '<a href="" class="editor_remove btn btn-danger">Delete</a>'
                 }
-            }
             ]
+        });
+
+        $('#semesters-table tbody').on('click', 'tr', function (e) {
+            e.preventDefault();
+            var row = tableSemesters.row(this);
+            var semester = row.data();
+            if ($(e.target).hasClass('editor_remove')) {
+                deleteSemester(semester, row); // in site.js
+            }
         });
     }) // document ready
 </script>
