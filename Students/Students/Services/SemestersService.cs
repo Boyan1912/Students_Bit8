@@ -26,7 +26,7 @@ namespace Students.Services
                 using var command = new MySqlCommand(
                     "SELECT s.id_semester, s.name, s.start_date, s.end_date, d.id_discipline, d.name, d.professor_name, d.score, " +
                         "(SELECT count(id) FROM students_semesters WHERE id_semester = s.id_semester) AS count_students FROM semester s " +
-                    "INNER JOIN discipline d ON s.id_semester = d.id_semester;", connection);
+                    "LEFT JOIN discipline d ON s.id_semester = d.id_semester;", connection);
                 using var reader = await command.ExecuteReaderAsync();
                 {
                     while (await reader.ReadAsync())
@@ -38,8 +38,16 @@ namespace Students.Services
                             semester = new Semester();
                             semester.IdSemester = id;
                             semester.Name = reader.GetValue(1).ToString();
-                            semester.StartDate = ((DateTime)reader.GetValue(2)).ToString("MM/dd/yyyy");
-                            semester.EndDate = ((DateTime)reader.GetValue(3)).ToString("MM/dd/yyyy");
+                            DateTime start;
+                            if (DateTime.TryParse(reader.GetValue(2).ToString(), null, System.Globalization.DateTimeStyles.None, out start))
+                            {
+                                semester.StartDate = start.ToString("MM/dd/yyyy");
+                            }
+                            DateTime end;
+                            if (DateTime.TryParse(reader.GetValue(3).ToString(), null, System.Globalization.DateTimeStyles.None, out end))
+                            {
+                                semester.EndDate = end.ToString("MM/dd/yyyy");
+                            }
                             semester.Disciplines = new List<Discipline>();
                             result.Add(semester);
                         }
@@ -47,13 +55,17 @@ namespace Students.Services
                         {
                             semester.HasStudents = (long)reader.GetValue(8) > 0;
                         }
-                        var discipline = new Discipline((int)reader.GetValue(4), reader.GetValue(5).ToString(), reader.GetValue(6).ToString());
-                        float score;
-                        if (float.TryParse(reader.GetValue(7).ToString(), System.Globalization.NumberStyles.Float, null, out score))
+                        int disciplineId;
+                        if (int.TryParse(reader.GetValue(4).ToString(), System.Globalization.NumberStyles.Float, null, out disciplineId))
                         {
-                            discipline.Score = score;
+                            var discipline = new Discipline(disciplineId, reader.GetValue(5).ToString(), reader.GetValue(6).ToString());
+                            float score;
+                            if (float.TryParse(reader.GetValue(7).ToString(), System.Globalization.NumberStyles.Float, null, out score))
+                            {
+                                discipline.Score = score;
+                            }
+                            semester.Disciplines.Add(discipline);
                         }
-                        semester.Disciplines.Add(discipline);
                     }
 
                 }

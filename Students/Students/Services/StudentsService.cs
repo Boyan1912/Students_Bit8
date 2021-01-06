@@ -26,9 +26,9 @@ namespace Students.Services
                 using var command = new MySqlCommand(
                     "SELECT s.id_student, s.first_name, s.last_name, s.date_of_birth, se.id_semester, se.name AS semester_name, d.id_discipline, d.name AS discipline_name, d.professor_name, d.score " +
                         "FROM student s " +
-                        "INNER JOIN students_semesters ss ON ss.id_student = s.id_student " +
-                        "INNER JOIN semester se ON se.id_semester = ss.id_semester " +
-                        "INNER JOIN discipline d ON d.id_semester = se.id_semester;"
+                        "LEFT JOIN students_semesters ss ON ss.id_student = s.id_student " +
+                        "LEFT JOIN semester se ON se.id_semester = ss.id_semester " +
+                        "LEFT JOIN discipline d ON d.id_semester = se.id_semester;"
                     , connection);
                 using var reader = await command.ExecuteReaderAsync();
                 {
