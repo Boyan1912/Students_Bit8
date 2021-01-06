@@ -10,7 +10,12 @@ VALUES('Ivan', 'Ivanov', STR_TO_DATE('17/1/1995', '%d/%m/%Y')),
 ('Peter', 'Hristov', STR_TO_DATE('1/12/1997', '%d/%m/%Y')),
 ('Stoyko', 'Ivanov', STR_TO_DATE('2/12/1998', '%d/%m/%Y')),
 ('Hristo', 'Valev', STR_TO_DATE('12/12/1992', '%d/%m/%Y')),
-('Rumen', 'Ivanov', STR_TO_DATE('17/2/1995', '%d/%m/%Y'));
+('Rumen', 'Ivanov', STR_TO_DATE('17/2/1995', '%d/%m/%Y')),
+('P', 'Ivanov', STR_TO_DATE('17/1/1995', '%d/%m/%Y')),
+('S', 'Georgiev', STR_TO_DATE('18/12/1996', '%d/%m/%Y')),
+('D', 'Dimitrov', STR_TO_DATE('22/4/2000', '%d/%m/%Y')),
+('L', 'Petrov', STR_TO_DATE('17/11/2001', '%d/%m/%Y')),
+('O', 'Mitev', STR_TO_DATE('17/10/1995', '%d/%m/%Y'));
 
 INSERT INTO semester (name, start_date, end_date) 
 VALUES ('Semester 1', STR_TO_DATE('11/9/2019', '%d/%m/%Y'), STR_TO_DATE('3/3/2020', '%d/%m/%Y')),
@@ -63,4 +68,18 @@ VALUES((SELECT id_student FROM student LIMIT 1), (SELECT id_semester FROM semest
 ((SELECT id_student FROM student LIMIT 1) + 4, (SELECT id_semester FROM semester WHERE name = 'Semester 1')),
 ((SELECT id_student FROM student LIMIT 1) + 5, (SELECT id_semester FROM semester WHERE name = 'Semester 2')),
 ((SELECT id_student FROM student LIMIT 1) + 2, (SELECT id_semester FROM semester WHERE name = 'Semester 3')),
-((SELECT id_student FROM student LIMIT 1) + 4, (SELECT id_semester FROM semester WHERE name = 'Semester 1'));
+((SELECT id_student FROM student LIMIT 1) + 4, (SELECT id_semester FROM semester WHERE name = 'Semester 1')),
+((SELECT id_student FROM student LIMIT 1) + 6, (SELECT id_semester FROM semester WHERE name = 'Semester 2')),
+((SELECT id_student FROM student LIMIT 1) + 7, (SELECT id_semester FROM semester WHERE name = 'Semester 3')),
+((SELECT id_student FROM student LIMIT 1) + 8, (SELECT id_semester FROM semester WHERE name = 'Semester 1')),
+((SELECT id_student FROM student LIMIT 1) + 9, (SELECT id_semester FROM semester WHERE name = 'Semester 1')),
+((SELECT id_student FROM student LIMIT 1) + 10, (SELECT id_semester FROM semester WHERE name = 'Semester 4')),
+((SELECT id_student FROM student LIMIT 1) + 9, (SELECT id_semester FROM semester WHERE name = 'Semester 1')),
+((SELECT id_student FROM student LIMIT 1) + 8, (SELECT id_semester FROM semester WHERE name = 'Semester 2')),
+((SELECT id_student FROM student LIMIT 1) + 7, (SELECT id_semester FROM semester WHERE name = 'Semester 3')),
+((SELECT id_student FROM student LIMIT 1) + 6, (SELECT id_semester FROM semester WHERE name = 'Semester 1')),
+((SELECT id_student FROM student LIMIT 1) + 10, (SELECT id_semester FROM semester WHERE name = 'Semester 2')),
+((SELECT id_student FROM student LIMIT 1) + 11, (SELECT id_semester FROM semester WHERE name = 'Semester 3')),
+((SELECT id_student FROM student LIMIT 1) + 12, (SELECT id_semester FROM semester WHERE name = 'Semester 1')),
+((SELECT id_student FROM student LIMIT 1) + 13, (SELECT id_semester FROM semester WHERE name = 'Semester 1')),
+((SELECT id_student FROM student LIMIT 1) + 14, (SELECT id_semester FROM semester WHERE name = 'Semester 4'));

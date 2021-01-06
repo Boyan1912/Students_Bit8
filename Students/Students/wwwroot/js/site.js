@@ -73,15 +73,21 @@ function onDatatableDataLoad (data) {
     return data.Data;
 }
 
-function renderDisciplineInTableCell(result, semester, index, value) {
+function renderDisciplineInTableCell(result, semester, index, value, studentId) {
     if (index === 0) {
         result = result + '<p class="font-italic text-info" style="margin-top:10px;">Disciplines for ' +  semester.Name + ':</p>';
         result = result + '<div class="row"><div class="col-3 font-weight-bold">Name</div><div class="col-3 font-weight-bold">Professor</div><div class="col-3 font-weight-bold">Score</div></div>';
     }
-    var deleteBtnId = 'delete-btn-' + value.IdDiscipline;
-    var addBtnId = 'add-btn-' + value.IdDiscipline;
-    var addDisciplineFormId = 'add-form-' + value.IdDiscipline;
-    var addDisciplineBtnId = 'add-discipline-btn-' + semester.IdSemester;
+    var deleteBtnId = 'delete-btn-' + value.IdDiscipline + '_'  + semester.IdSemester;
+    var addBtnId = 'add-btn-' + value.IdDiscipline + '_'  + semester.IdSemester;
+    var addDisciplineFormId = 'add-form-' + value.IdDiscipline + '_'  + semester.IdSemester;
+    var addDisciplineBtnId = 'add-discipline-btn-' + value.IdDiscipline + '_'  + semester.IdSemester;
+    if (studentId) { // fix for unique ids
+        deleteBtnId += "_" + studentId;
+        addBtnId += "_" + studentId;
+        addDisciplineFormId += "_" + studentId;
+        addDisciplineBtnId += "_" + studentId;
+    }
     result = result + ('<div class="row">' +
         '<div class="col-3">' + value.Name + '</div>' + 
         '<div class="col-3">' + value.ProfessorName + '</div>' + 
@@ -90,7 +96,7 @@ function renderDisciplineInTableCell(result, semester, index, value) {
         '</div>');
 
     $('#' + deleteBtnId).on('click', function(e) {
-        deleteDiscipline(value); // in site.js
+        deleteDiscipline(value);
     });
     if (index === semester.Disciplines.length - 1) {
         result = result + '<div class="row add-btn-wrapper" style="padding-left:10px;"><button class="col-9 btn btn-success btn-sm" type="button" id="' + addBtnId + '">Add Discipline</button></div>';
@@ -224,7 +230,7 @@ function getStudentsDatatableOptions(sourceUrl) {
                             }
 
                             $.each(value.Disciplines, function( i, val ) {
-                                result = renderDisciplineInTableCell(result, value, i, val);
+                                result = renderDisciplineInTableCell(result, value, i, val, row.IdStudent);
                             })
 
                         }); // each semester
