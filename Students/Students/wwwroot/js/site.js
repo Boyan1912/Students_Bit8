@@ -210,31 +210,8 @@ function getStudentsDatatableOptions(sourceUrl) {
                     width: '60%',
                     render: function ( data, type, row, meta ) {
                         var result = '';
-                        $.each(row.Semesters, function( index, value ) {
-                            var addBtnId = 'add-btn-' + value.IdSemester;
-                            var addSemesterFormId = 'add-form-' + row.IdStudent;
-                            var addSemesterBtnId = 'add-semester-btn-' + row.IdStudent;
-
-                            if (index === 0) {
-                                result = result + '<br/>';
-
-                                result = result + '<div class="row add-btn-wrapper" style="padding-left:10px;"><button class="col-5 btn btn-warning btn-sm" type="button" id="' + addBtnId + '">Add Semester</button></div>';
-                                result = result + '<form id="' + addSemesterFormId + '" style="display:none" >' +
-                                                            '<div class="form-group">' +
-                                                                '<label>Name</label>' +
-                                                                '<input type="text" class="form-control" name="name" placeholder="Semester name">' +
-                                                            '</div>' + 
-                                                            '<button type="button" id="' + addSemesterBtnId + '" class="btn btn-primary">Submit</button>' +
-                                                        '</form>';
-                                $('#' + addBtnId).on('click', function(e) {
-                                    $('#' + addSemesterFormId).show();
-                                });
-                                $('#' + addSemesterBtnId).on('click', function(e) {
-                                    var semesterName = $('#' + addSemesterFormId + ' input[name="name"]').val();
-                                    postCreateSemester(row.IdStudent, semesterName);
-                                });
-                            }
-                            
+                        result = getCreateSemesterUI(result, row);
+                        $.each(row.Semesters, function( index, value ) {                        
                             result = result + ('<div class="row">' +
                                 '<div class="col-12">' + value.Name + '</div>' + 
                                 '</div>');
@@ -252,8 +229,36 @@ function getStudentsDatatableOptions(sourceUrl) {
                         return result;
                     }
                 }
-            ]
+            ],
+            order: [[ 0, "desc" ]]
         }
+}
+
+function getCreateSemesterUI(result, row) {
+    var addBtnId = 'open-semester-form-btn-' + row.IdStudent;
+    var addSemesterFormId = 'add-form-' + row.IdStudent;
+    var addSemesterBtnId = 'add-semester-btn-' + row.IdStudent;
+
+    result = result + '<br/>';
+
+    result = result + '<div class="row add-btn-wrapper" style="padding-left:10px;"><button class="col-5 btn btn-warning btn-sm" type="button" id="' + addBtnId + '">Add Semester</button></div>';
+    result = result + '<form id="' + addSemesterFormId + '" style="display:none" >' +
+                                '<div class="form-group">' +
+                                    '<label>Name</label>' +
+                                    '<input type="text" class="form-control" name="name" placeholder="Semester name">' +
+                                '</div>' + 
+                                '<button type="button" id="' + addSemesterBtnId + '" class="btn btn-primary">Submit</button>' +
+                            '</form>';
+    $('#' + addBtnId).on('click', function(e) {
+        debugger;
+        $('#' + addSemesterFormId).show();
+    });
+    $('#' + addSemesterBtnId).on('click', function(e) {
+        var semesterName = $('#' + addSemesterFormId + ' input[name="name"]').val();
+        postCreateSemester(row.IdStudent, semesterName);
+    });
+
+    return result;
 }
 
 function deleteSemester(semester, row) {
