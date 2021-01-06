@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Students.API
 {
     [ApiController]
-    public class StudentsController
+    public class StudentsController : ControllerBase
     {
         private readonly IConfiguration _config;
         private readonly IStudentsService _service;
@@ -75,6 +75,24 @@ namespace Students.API
             }
 
             return new JsonResult(result);
+        }
+
+        [HttpPost("Students/Create")]
+        public async Task<IActionResult> Create(string firstName, string lastName, string dateBirth)
+        {
+            var result = new ApiResultModel<object>();
+
+            try
+            {
+                await _service.CreateStudent(firstName, lastName, dateBirth);
+                result.Message = "Success";
+            }
+            catch (Exception ex)
+            {
+                result.ErrorMessage = ex.Message;
+            }
+
+            return Ok(result);
         }
     }
 }

@@ -7,6 +7,30 @@
 
 <p>View and edit semesters</p>
 
+<div class="row" style="padding: 15px;">
+    <button type="button" class="btn btn-primary" id="add-student-btn">Add Student</button>
+</div>
+<div class="row">
+    <div class="col-4" style="padding-bottom: 15px;">
+        <form id="add-new-student-form" style="display:none">
+            <div class="form-group">
+                <label>First Name</label>
+                <input type="text" class="form-control" name="first-name" placeholder="First name">
+            </div>
+            <div class="form-group">
+                <label>Last Name</label>
+                <input type="text" class="form-control" name="last-name" placeholder="Last name">
+            </div>
+            <div class="form-group">
+                <label>Date of Birth</label>
+                <input data-provide="datepicker" class="form-control datepicker" name="dob" placeholder="Choose">
+            </div>
+            <button type="button" id="add-new-student-btn" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+
+
 <div class="row">
     <div class="col-12">
         <table id="students-table" class="table table-striped">
@@ -35,9 +59,26 @@
 </div>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
+
+        $('.datepicker').datepicker({
+            format: 'dd/mm/yyyy',
+            startDate: '01/01/2000'
+        });
+
+        $('#add-student-btn').on('click', function(e) {
+            $('#add-new-student-form').show();
+        });
+
+        $('#add-new-student-btn').on('click', function (e) {
+            var firstName = $('#add-new-student-form input[name="first-name"]').val();
+            var lastName = $('#add-new-student-form input[name="last-name"]').val();
+            var dateBirth = $('#add-new-student-form input[name="dob"]').val();
+            postCreateStudent(firstName, lastName, dateBirth);
+        });
+
         var tableStudents = $('#students-table').DataTable(
-        getStudentsDatatableOptions('/Students/GetData') // in site.js
+            getStudentsDatatableOptions('/Students/GetData') // in site.js
         );
     })
 </script>

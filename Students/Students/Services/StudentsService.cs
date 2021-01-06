@@ -76,6 +76,18 @@ namespace Students.Services
             return await GetStudentsResult(sql);
         }
 
+        public async Task CreateStudent(string firstName, string lastName, string dateBirth)
+        {
+            using var connection = new MySqlConnection(_connString);
+            {
+                await connection.OpenAsync();
+                using var command = new MySqlCommand("INSERT INTO student(first_name, last_name, date_of_birth) " +
+                    $"VALUES('{firstName}', '{lastName}', STR_TO_DATE('{dateBirth}', '%d/%m/%Y'));", connection);
+                await command.ExecuteScalarAsync();
+                await connection.CloseAsync();
+            }
+        }
+
         private async Task<List<Student>> GetStudentsResult(string sql)
         {
             var result = new List<Student>();
