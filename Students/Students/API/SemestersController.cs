@@ -40,12 +40,12 @@ namespace Students.API
         }
 
         [HttpPost("Semesters/Create")]
-        public async Task<IActionResult> Create([FromQuery] string name, [FromQuery] int? studentId)
+        public async Task<IActionResult> Create([FromQuery] string name, [FromQuery] string startDate, [FromQuery] string endDate, [FromQuery] int? studentId)
         {
             var result = new ApiResultModel<object>();
             try
             {
-                await _service.Create(studentId, name);
+                await _service.Create(studentId, name, startDate, endDate);
                 result.Message = "Success";
             }
             catch (Exception ex)

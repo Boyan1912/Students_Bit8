@@ -17,6 +17,14 @@
                 <label>Name</label>
                 <input type="text" class="form-control" name="name" placeholder="Semester name">
             </div>
+            <div class="form-group">
+                <label>Start date</label>
+                <input type="text" class="form-control datepicker" name="start" placeholder="Chose date">
+            </div>
+            <div class="form-group">
+                <label>End date</label>
+                <input type="text" class="form-control datepicker" name="end" placeholder="Chose date">
+            </div>
             <button type="button" id="add-new-semester-btn" class="btn btn-primary">Submit</button>
         </form>
     </div>
@@ -54,13 +62,19 @@
 
 <script>
     $(document).ready(function() {
+        $('.datepicker').datepicker({
+            format: 'dd/mm/yyyy'
+        });
+
         $('#add-semester-btn').on('click', function(e) {
             $('#add-new-semester-form').show();
         });
 
         $('#add-new-semester-btn').on('click', function (e) {
             var semesterName = $('#add-new-semester-form input[name="name"]').val();
-            postCreateSemester(null, semesterName);
+            var startDate = $('#add-new-semester-form input[name="start"]').val();
+            var endDate = $('#add-new-semester-form input[name="end"]').val();
+            postCreateSemester(null, semesterName, startDate, endDate);
         });
 
         var tableSemesters = $('#semesters-table').DataTable({
@@ -89,7 +103,8 @@
                     className: "center",
                     defaultContent: '<a href="" class="editor_remove btn btn-danger">Delete</a>'
                 }
-            ]
+            ],
+            order: [[ 0, "desc" ]]
         });
 
         $('#semesters-table tbody').on('click', 'tr', function (e) {

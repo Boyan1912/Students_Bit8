@@ -157,8 +157,17 @@ function postCreateDiscipline(semesterId, disciplineName, professorName, score) 
             
 }
 
-function postCreateSemester(studentId, semesterName) {
-    var postUrl = "/Semesters/Create?name=" + semesterName;
+function postCreateSemester(studentId, semesterName, startDate, endDate) {
+    if (!semesterName) {
+        return alert('Semester must have a name!')
+    }
+    if (!startDate) {
+        return alert('Semester must have a start date!')
+    }
+    if (!endDate) {
+        return alert('Semester must have an end date!')
+    }
+    var postUrl = "/Semesters/Create?name=" + semesterName + "&startDate=" + startDate + "&endDate=" + endDate;
     if (studentId) {
         postUrl += "&studentId=" + studentId
     }
@@ -213,7 +222,14 @@ function getStudentsDatatableOptions(sourceUrl) {
                         result = getCreateSemesterUI(result, row);
                         $.each(row.Semesters, function( index, value ) {                        
                             result = result + ('<div class="row">' +
-                                '<div class="col-12">' + value.Name + '</div>' + 
+                                '<div class="col-4 font-weight-bold">Name</div>' + 
+                                '<div class="col-4 font-weight-bold">Start date</div>' + 
+                                '<div class="col-4 font-weight-bold">End date</div>' + 
+                                '</div>');
+                            result = result + ('<div class="row">' +
+                                '<div class="col-4">' + value.Name + '</div>' + 
+                                '<div class="col-4">' + value.StartDate + '</div>' + 
+                                '<div class="col-4">' + value.EndDate + '</div>' + 
                                 '</div>');
 
                             if (value.Disciplines.length === 0) {
@@ -247,10 +263,22 @@ function getCreateSemesterUI(result, row) {
                                     '<label>Name</label>' +
                                     '<input type="text" class="form-control" name="name" placeholder="Semester name">' +
                                 '</div>' + 
+                                '<div class="form-group">' +
+                                    '<label>Start date</label>' +
+                                    '<input type="text" class="form-control datepicker" name="start" placeholder="Chose date">' +
+                                '</div>' + 
+                                '<div class="form-group">' +
+                                    '<label>End date</label>' +
+                                    '<input type="text" class="form-control datepicker" name="end" placeholder="Chose date">' +
+                                '</div>' + 
                                 '<button type="button" id="' + addSemesterBtnId + '" class="btn btn-primary">Submit</button>' +
                             '</form>';
+
+    $('.datepicker').datepicker({
+            format: 'dd/mm/yyyy'
+    });
+
     $('#' + addBtnId).on('click', function(e) {
-        debugger;
         $('#' + addSemesterFormId).show();
     });
     $('#' + addSemesterBtnId).on('click', function(e) {
@@ -287,6 +315,15 @@ function deleteSemester(semester, row) {
 }
 
 function postCreateStudent(firstName, lastName, dateBirth) {
+    if (!firstName) {
+        return alert('First name must not be empty!');
+    }
+    if (!lastName) {
+        return alert('Last name must not be empty!');
+    }
+    if (!dateBirth) {
+        return alert('Date of birth must have value!');
+    }
     $.ajax({
         url: '/Students/Create?firstName=' + firstName + '&lastName=' + lastName + '&dateBirth=' + dateBirth,
         method: "POST",

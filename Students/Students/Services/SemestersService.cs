@@ -75,11 +75,11 @@ namespace Students.Services
             return result;
         }
 
-        public async Task Create(int? studentId, string name)
+        public async Task Create(int? studentId, string name, string startDate, string endDate)
         {
             using var connection = new MySqlConnection(_connString);
             {
-                string script = $"INSERT INTO semester(name) VALUES('{name}');";
+                string script = $"INSERT INTO semester(name, start_date, end_date) VALUES('{name}',STR_TO_DATE('{startDate}', '%d/%m/%Y'),STR_TO_DATE('{endDate}', '%d/%m/%Y'));";
                 if (studentId.HasValue)
                 {
                     script += $"INSERT INTO students_semesters (id_student, id_semester) VALUES({studentId}, (SELECT LAST_INSERT_ID()));";

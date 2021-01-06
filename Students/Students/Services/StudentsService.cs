@@ -18,7 +18,7 @@ namespace Students.Services
 
         public async Task<List<Student>> GetAll()
         {
-            string sql = "SELECT s.id_student, s.first_name, s.last_name, s.date_of_birth, se.id_semester, se.name AS semester_name, d.id_discipline, d.name AS discipline_name, d.professor_name, d.score " +
+            string sql = "SELECT s.id_student, s.first_name, s.last_name, s.date_of_birth, se.id_semester, se.name AS semester_name, se.start_date, se.end_date, d.id_discipline, d.name AS discipline_name, d.professor_name, d.score " +
                         "FROM student s " +
                         "LEFT JOIN students_semesters ss ON ss.id_student = s.id_student " +
                         "LEFT JOIN semester se ON se.id_semester = ss.id_semester " +
@@ -66,7 +66,7 @@ namespace Students.Services
 
         public async Task<List<Student>> GetStudentsWithEmptyScores()
         {
-            string sql = "SELECT s.id_student, s.first_name, s.last_name, s.date_of_birth, se.id_semester, se.name AS semester_name, d.id_discipline, d.name AS discipline_name, d.professor_name, d.score " +
+            string sql = "SELECT s.id_student, s.first_name, s.last_name, s.date_of_birth, se.id_semester, se.name AS semester_name, se.start_date, se.end_date, d.id_discipline, d.name AS discipline_name, d.professor_name, d.score " +
                         "FROM student s " +
                         "LEFT JOIN students_semesters ss ON ss.id_student = s.id_student " +
                         "LEFT JOIN semester se ON se.id_semester = ss.id_semester " +
@@ -132,18 +132,28 @@ namespace Students.Services
                         semester = new Semester();
                         semester.IdSemester = idSemester;
                         semester.Name = reader.GetValue(5).ToString();
+                        DateTime startDate;
+                        if (DateTime.TryParse(reader.GetValue(6).ToString(), null, System.Globalization.DateTimeStyles.None, out startDate))
+                        {
+                            semester.StartDate = startDate.ToString("MM/dd/yyyy");
+                        }
+                        DateTime endDate;
+                        if (DateTime.TryParse(reader.GetValue(7).ToString(), null, System.Globalization.DateTimeStyles.None, out endDate))
+                        {
+                            semester.EndDate = endDate.ToString("MM/dd/yyyy");
+                        }
                         semester.Disciplines = new List<Discipline>();
                         student.Semesters.Add(semester);
                     }
                     int idDiscipline;
-                    if (int.TryParse(reader.GetValue(6).ToString(), System.Globalization.NumberStyles.Integer, null, out idDiscipline))
+                    if (int.TryParse(reader.GetValue(8).ToString(), System.Globalization.NumberStyles.Integer, null, out idDiscipline))
                     {
                         var discipline = semester.Disciplines.FirstOrDefault(d => d.IdDiscipline == idDiscipline);
                         if (discipline == null)
                         {
-                            discipline = new Discipline(idDiscipline, reader.GetValue(7).ToString(), reader.GetValue(8).ToString());
+                            discipline = new Discipline(idDiscipline, reader.GetValue(9).ToString(), reader.GetValue(10).ToString());
                             float score;
-                            if (float.TryParse(reader.GetValue(9).ToString(), System.Globalization.NumberStyles.Float, null, out score))
+                            if (float.TryParse(reader.GetValue(11).ToString(), System.Globalization.NumberStyles.Float, null, out score))
                             {
                                 discipline.Score = score;
                             }
