@@ -281,6 +281,26 @@ function deleteSemester(semester, row) {
     }
 }
 
+function postCreateStudent(firstName, lastName, dateBirth) {
+    $.ajax({
+        url: '/Students/Create?firstName=' + firstName + '&lastName=' + lastName + '&dateBirth=' + dateBirth,
+        method: "POST",
+        contentType: 'application/json'
+    })
+    .done(function(res) { 
+        if (!!res.ErrorMessage) {
+            alert(res.ErrorMessage);
+        }
+        else {
+            location.reload(true);
+        }    
+    })
+    .fail(function(err){
+        console.error(err.responseText);
+        alert('Error creating semester');  
+    });
+}
+
 
 
 
