@@ -24,9 +24,9 @@ namespace Students.Services
                 await connection.OpenAsync();
 
                 using var command = new MySqlCommand(
-                    "SELECT * FROM semester s " +
-                    "JOIN discipline d " +
-                    "ON s.id_semester = d.id_semester;", connection);
+                    "SELECT s.id_semester, s.name, s.start_date, s.end_date, d.id_discipline, d.name, d.professor_name, d.score, " +
+                        "(SELECT count(id) FROM students_semesters WHERE id_semester = s.id_semester) AS count_students FROM semester s " +
+                    "INNER JOIN discipline d ON s.id_semester = d.id_semester;", connection);
                 using var reader = await command.ExecuteReaderAsync();
                 {
                     while (await reader.ReadAsync())
@@ -37,18 +37,17 @@ namespace Students.Services
                         {
                             semester = new Semester();
                             semester.IdSemester = id;
-                            semester.Name = reader.GetValue(2).ToString();
+                            semester.Name = reader.GetValue(1).ToString();
                             semester.Disciplines = new List<Discipline>();
                             result.Add(semester);
                         }
-                        int studentId;
-                        if (!semester.HasStudents && int.TryParse(reader.GetValue(1).ToString(), System.Globalization.NumberStyles.Integer, null, out studentId))
+                        if (!semester.HasStudents)
                         {
-                            semester.HasStudents = true;
+                            semester.HasStudents = (long)reader.GetValue(8) > 0;
                         }
-                        var discipline = new Discipline((int)reader.GetValue(3), reader.GetValue(4).ToString(), reader.GetValue(5).ToString());
+                        var discipline = new Discipline((int)reader.GetValue(4), reader.GetValue(5).ToString(), reader.GetValue(6).ToString());
                         float score;
-                        if (float.TryParse(reader.GetValue(6).ToString(), System.Globalization.NumberStyles.Float, null, out score))
+                        if (float.TryParse(reader.GetValue(7).ToString(), System.Globalization.NumberStyles.Float, null, out score))
                         {
                             discipline.Score = score;
                         }
@@ -66,11 +65,14 @@ namespace Students.Services
         {
             using var connection = new MySqlConnection(_connString);
             {
+                string script = $"INSERT INTO semester(name) VALUES({name});";
+                if (studentId.HasValue)
+                {
+                    script += $"INSERT INTO students_semesters (id_student, id_semester) VALUES({studentId}, (SELECT LAST_INSERT_ID()));";
+                }
                 await connection.OpenAsync();
                 string studIdStr = studentId.HasValue ? studentId.ToString() : "null";
-                using var command = new MySqlCommand(
-                    "INSERT INTO mydb.semester(name, id_student) " +
-                    "VALUES('" + name + "'," + studIdStr + ")", connection);
+                using var command = new MySqlCommand(script, connection);
                 await command.ExecuteScalarAsync();
                 await connection.CloseAsync();
             }
@@ -93,12 +95,13 @@ namespace Students.Services
 
         private async Task<bool> CanBeDeleted(int id, MySqlConnection connection)
         {
-            using var command = new MySqlCommand("SELECT id_student FROM semester WHERE id_semester = " + id, connection);
+            using var command = new MySqlCommand("SELECT count(id) FROM students_semesters WHERE id_semester = " + id, connection);
             using var reader = await command.ExecuteReaderAsync();
             {
                 await reader.ReadAsync();
-                int studentId;
-                return !int.TryParse(reader.GetValue(0).ToString(), System.Globalization.NumberStyles.Integer, null, out studentId);
+                long countRows = (long)reader.GetValue(0);
+
+                return countRows == 0;
             }
         }
     }
