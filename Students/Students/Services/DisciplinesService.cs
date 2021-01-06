@@ -1,5 +1,6 @@
 ﻿using MySqlConnector;
 using Students.Models;
+using Students.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -12,10 +13,12 @@ namespace Students.Services
     public class DisciplinesService : IDisciplinesService
     {
         private readonly string _connString;
+        private readonly IAppRepository repo;
 
         public DisciplinesService(string connString)
         {
             _connString = connString;
+            repo = new AppRepository(_connString);
         }
 
         public async Task<List<Discipline>> GetAll()
@@ -66,46 +69,31 @@ namespace Students.Services
 
         public async Task UpdateProfessorName(int id, string professorName)
         {
-            using var connection = new MySqlConnection(_connString);
-            {
-                await connection.OpenAsync();
-                using var command = new MySqlCommand(
-                    "UPDATE discipline " +
+            string sql = "UPDATE discipline " +
                     "SET professor_name = '" + professorName + "'" +
-                    " WHERE id_discipline = " + id, connection);
-                await command.ExecuteScalarAsync();
-                await connection.CloseAsync();
-            }
+                    " WHERE id_discipline = " + id;
+            await repo.Execute(sql);
         }
 
-        public async Task Create(string name, string professorName, int semesterId, float? score = null)
+        public async Task Create(string name, string professorName, int? semesterId, float? score = null)
         {
             using var connection = new MySqlConnection(_connString);
             {
-                await connection.OpenAsync();
-                string scoreStr = score.HasValue ? score.ToString().Replace(",",".") : "null";
-                using var command = new MySqlCommand(
-                    "INSERT INTO discipline (name, professor_name, score, id_semester)  " +
-                    "VALUES('" + name + "','" + professorName + "'," + scoreStr + "," + semesterId + ")", connection); 
-                await command.ExecuteScalarAsync();
-                await connection.CloseAsync();
+                string semId = semesterId.HasValue ? semesterId.ToString() : "null";
+                string scoreStr = score.HasValue ? score.ToString().Replace(",", ".") : "null";
+                string sql = "INSERT INTO discipline (name, professor_name, score, id_semester)  " +
+                    "VALUES('" + name + "','" + professorName + "'," + scoreStr + "," + semId + ")";
+
+                await repo.Execute(sql);
             }
         }
 
         private async Task<bool> CanBeDeleted(int id, MySqlConnection connection)
         {
-                using var command = new MySqlCommand("SELECT score FROM discipline WHERE id_discipline = " + id, connection);
-                using var reader = await command.ExecuteReaderAsync();
-                {
-                    await reader.ReadAsync();
-                    float score;
-                    if (float.TryParse(reader.GetValue(0).ToString(), System.Globalization.NumberStyles.Float, null, out score))
-                    {
-                        return false;
-                    }
-                }
-        
-            return true;
+            string sql = "SELECT score FROM discipline WHERE id_discipline = " + id;
+            var result = await repo.GetSingleResult(sql, connection);
+            float score;
+            return !float.TryParse(result.ToString(), System.Globalization.NumberStyles.Float, null, out score);
         }
     }
 }

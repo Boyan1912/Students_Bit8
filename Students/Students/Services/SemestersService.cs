@@ -1,5 +1,6 @@
 ﻿using MySqlConnector;
 using Students.Models;
+using Students.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,12 @@ namespace Students.Services
     public class SemestersService : ISemestersService
     {
         private readonly string _connString;
+        private readonly IAppRepository repo;
 
         public SemestersService(string connString)
         {
             _connString = connString;
+            repo = new AppRepository(_connString);
         }
 
         public async Task<List<Semester>> GetAll()
@@ -84,11 +87,8 @@ namespace Students.Services
                 {
                     script += $"INSERT INTO students_semesters (id_student, id_semester) VALUES({studentId}, (SELECT LAST_INSERT_ID()));";
                 }
-                await connection.OpenAsync();
                 string studIdStr = studentId.HasValue ? studentId.ToString() : "null";
-                using var command = new MySqlCommand(script, connection);
-                await command.ExecuteScalarAsync();
-                await connection.CloseAsync();
+                await repo.Execute(script);
             }
         }
 
@@ -101,6 +101,7 @@ namespace Students.Services
                 {
                     throw new ArgumentException("Only semesters without any students can be deleted!");
                 }
+                
                 using var command = new MySqlCommand("DELETE FROM semester WHERE id_semester = " + id, connection);
                 await command.ExecuteScalarAsync();
                 await connection.CloseAsync();
@@ -109,14 +110,9 @@ namespace Students.Services
 
         private async Task<bool> CanBeDeleted(int id, MySqlConnection connection)
         {
-            using var command = new MySqlCommand("SELECT count(id) FROM students_semesters WHERE id_semester = " + id, connection);
-            using var reader = await command.ExecuteReaderAsync();
-            {
-                await reader.ReadAsync();
-                long countRows = (long)reader.GetValue(0);
+            long countRows = (long)await repo.GetSingleResult("SELECT count(id) FROM students_semesters WHERE id_semester = " + id, connection);
 
-                return countRows == 0;
-            }
+            return countRows == 0;
         }
     }
 }

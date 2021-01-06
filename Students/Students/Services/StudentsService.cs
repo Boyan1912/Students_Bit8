@@ -1,5 +1,6 @@
 ﻿using MySqlConnector;
 using Students.Models;
+using Students.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,12 @@ namespace Students.Services
     public class StudentsService : IStudentsService
     {
         private readonly string _connString;
+        private readonly IAppRepository repo;
 
         public StudentsService(string connString)
         {
             _connString = connString;
+            repo = new AppRepository(_connString);
         }
 
         public async Task<List<Student>> GetAll()
@@ -78,14 +81,10 @@ namespace Students.Services
 
         public async Task CreateStudent(string firstName, string lastName, string dateBirth)
         {
-            using var connection = new MySqlConnection(_connString);
-            {
-                await connection.OpenAsync();
-                using var command = new MySqlCommand("INSERT INTO student(first_name, last_name, date_of_birth) " +
-                    $"VALUES('{firstName}', '{lastName}', STR_TO_DATE('{dateBirth}', '%d/%m/%Y'));", connection);
-                await command.ExecuteScalarAsync();
-                await connection.CloseAsync();
-            }
+            string sql = "INSERT INTO student(first_name, last_name, date_of_birth) " +
+                    $"VALUES('{firstName}', '{lastName}', STR_TO_DATE('{dateBirth}', '%d/%m/%Y'));";
+
+            await repo.Execute(sql);
         }
 
         private async Task<List<Student>> GetStudentsResult(string sql)

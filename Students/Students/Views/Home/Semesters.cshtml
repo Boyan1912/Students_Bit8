@@ -91,8 +91,11 @@
                     data: 'Disciplines',
                     render: function ( data, type, row, meta ) {
                         var result = '';
+                        if (row.Disciplines.length === 0) {
+                           result = result + getAddDisciplineUI('add-first-btn-' + row.IdSemester, 'add-first-form-' + row.IdSemester, 'add-first-disc-btn-' + row.IdSemester, row.IdSemester);
+                        }
                         $.each(row.Disciplines, function( index, value ) {
-                            result = renderDisciplineInTableCell(result, row, index, value); // in site.js
+                            result = result +  renderDisciplineInTableCell(result, row, index, value); // in site.js
                         });
 
                         return result;

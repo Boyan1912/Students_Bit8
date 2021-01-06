@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Web.Helpers;
 
 namespace Students.API
 {
@@ -77,7 +76,7 @@ namespace Students.API
         }
 
         [HttpPost("Disciplines/Create")]
-        public async Task<IActionResult> Create([FromQuery] int semesterId, [FromQuery] string name, [FromQuery] string professor, [FromQuery] float? score = null)
+        public async Task<IActionResult> Create([FromQuery] string name, [FromQuery] string professor, [FromQuery] int? semesterId, [FromQuery] float? score = null)
         {
             var result = new ApiResultModel<object>();
             try

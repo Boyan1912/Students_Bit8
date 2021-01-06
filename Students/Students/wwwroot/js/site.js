@@ -130,15 +130,22 @@ function getAddDisciplineUI(addBtnId, addDisciplineFormId, addDisciplineBtnId, s
         var profName = $('#' + addDisciplineFormId + ' input[name="professor"]').val();
         var score = $('#' + addDisciplineFormId + ' input[name="score"]').val();
                                 
-        postCreateDiscipline(semesterId, discName, profName, score)
+        postCreateDiscipline(discName, profName, semesterId, score)
     });
 
     return result;
 }
 
-function postCreateDiscipline(semesterId, disciplineName, professorName, score) {
+function postCreateDiscipline(disciplineName, professorName, semesterId, score) {
+    var url = "/Disciplines/Create?name=" + disciplineName + "&professor=" + professorName;
+    if (semesterId) {
+        url += "&semesterId=" + semesterId;
+    }
+    if (score) {
+        url += "&score=" + score;
+    }
     $.ajax({
-                url: "/Disciplines/Create?semesterId=" + semesterId + "&name=" + disciplineName + "&professor=" + professorName + "&score=" + score,
+                url: url,
                 method: "POST",
                 contentType: 'application/json'
             })
@@ -283,7 +290,9 @@ function getCreateSemesterUI(result, row) {
     });
     $('#' + addSemesterBtnId).on('click', function(e) {
         var semesterName = $('#' + addSemesterFormId + ' input[name="name"]').val();
-        postCreateSemester(row.IdStudent, semesterName);
+        var startDate = $('#' + addSemesterFormId + ' input[name="start"]').val();
+        var endDate = $('#' + addSemesterFormId + ' input[name="end"]').val();
+        postCreateSemester(row.IdStudent, semesterName, startDate, endDate);
     });
 
     return result;

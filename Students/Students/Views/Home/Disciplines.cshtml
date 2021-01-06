@@ -23,10 +23,10 @@
                 <label>Score</label>
                 <input type="number" class="form-control" name="score" placeholder="Score">
             </div>
-            <div class="form-group">
+            @*<div class="form-group">
                 <label>Semester Id</label>
                 <input type="number" class="form-control" name="semester" placeholder="Semester Id">
-            </div>
+            </div>*@
             <button type="button" id="add-new-discipline-btn" class="btn btn-primary">Submit</button>
         </form>
     </div>
@@ -70,8 +70,8 @@
             var disciplineName = $('#add-new-discipline-form input[name="name"]').val();
             var disciplineProf = $('#add-new-discipline-form input[name="professor"]').val();
             var disciplineScore = $('#add-new-discipline-form input[name="score"]').val();
-            var semesterId = $('#add-new-discipline-form input[name="semester"]').val();
-            postCreateDiscipline(semesterId, disciplineName, disciplineProf, disciplineScore);
+            //var semesterId = $('#add-new-discipline-form input[name="semester"]').val();
+            postCreateDiscipline(disciplineName, disciplineProf, null, disciplineScore);
         });
 
 
