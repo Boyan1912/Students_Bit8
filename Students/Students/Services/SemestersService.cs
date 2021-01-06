@@ -38,6 +38,8 @@ namespace Students.Services
                             semester = new Semester();
                             semester.IdSemester = id;
                             semester.Name = reader.GetValue(1).ToString();
+                            semester.StartDate = ((DateTime)reader.GetValue(2)).ToString("MM/dd/yyyy");
+                            semester.EndDate = ((DateTime)reader.GetValue(3)).ToString("MM/dd/yyyy");
                             semester.Disciplines = new List<Discipline>();
                             result.Add(semester);
                         }
