@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 
 namespace Students.Models
 {
-    public class Student
+    public class Student : BaseStudentModel
     {
-        public int IdStudent { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string DateOfBirth { get; set; }
+        public Student(int id, string firstName, string lastName) : base(id, firstName, lastName)
+        {
+
+        }
+
         public List<Semester> Semesters { get; set; }
     }
 }

@@ -56,7 +56,7 @@ namespace Students.Services
                             semester.HasStudents = (long)reader.GetValue(8) > 0;
                         }
                         int disciplineId;
-                        if (int.TryParse(reader.GetValue(4).ToString(), System.Globalization.NumberStyles.Float, null, out disciplineId))
+                        if (int.TryParse(reader.GetValue(4).ToString(), System.Globalization.NumberStyles.Integer, null, out disciplineId))
                         {
                             var discipline = new Discipline(disciplineId, reader.GetValue(5).ToString(), reader.GetValue(6).ToString());
                             float score;
