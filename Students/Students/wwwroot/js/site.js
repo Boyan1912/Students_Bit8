@@ -189,15 +189,19 @@ function getStudentsDatatableOptions(sourceUrl) {
                 },
                 { 
                     data: 'FirstName',
-                    width: '15%'
+                    width: '12%'
                 },
                 { 
                     data: 'LastName',
-                    width: '15%'
+                    width: '13%'
+                },
+                { 
+                    data: 'DateOfBirth',
+                    width: '10%'
                 },
                 {
                     data: 'Semesters',
-                    width: '65%',
+                    width: '60%',
                     render: function ( data, type, row, meta ) {
                         var result = '';
                         $.each(row.Semesters, function( index, value ) {

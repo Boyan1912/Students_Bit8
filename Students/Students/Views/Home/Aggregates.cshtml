@@ -15,6 +15,7 @@
                     <th>Id</th>
                     <th>First Name</th>
                     <th>Surname</th>
+                    <th>Date of Birth</th>
                     <th>Average Score</th>
                 </tr>
             </thead>
@@ -25,6 +26,7 @@
                     <th>Id</th>
                     <th>First Name</th>
                     <th>Surname</th>
+                    <th>Date of Birth</th>
                     <th>Average Score</th>
                 </tr>
             </tfoot>
@@ -43,9 +45,10 @@
                 { data: 'IdStudent' },
                 { data: 'FirstName' },
                 { data: 'LastName' },
+                { data: 'DateOfBirth', orderable: false },
                 { data: 'AvgScore' }
             ],
-            order: [[ 3, "desc" ]]
+            order: [[ 4, "desc" ]]
         });
     });
 </script>
