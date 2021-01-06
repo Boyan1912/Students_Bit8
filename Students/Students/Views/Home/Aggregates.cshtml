@@ -7,8 +7,9 @@
 
 <p>Aggregated Data</p>
 
-
-<h3>Top 10 students by their average score throughout all semesters</h3>
+<div style="padding-bottom:20px;">
+    <h3>Top 10 students by their average score throughout all semesters</h3>
+</div>
 <div class="row">
     <div class="col-12">
         <table id="top-ten-students-table" class="table table-striped">
@@ -36,6 +37,38 @@
     </div>
 </div>
 
+<div style="padding-bottom:20px;">
+    <h3>
+        Students and disciplines on which they do not have scores yet
+    </h3>
+</div>
+<div class="row">
+    <div class="col-12">
+        <table id="scoreless-students-table" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>First Name</th>
+                    <th>Surname</th>
+                    <th>Date of Birth</th>
+                    <th>Semesters and Disciplines</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Id</th>
+                    <th>First Name</th>
+                    <th>Surname</th>
+                    <th>Date of Birth</th>
+                    <th>Semesters and Disciplines</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
 <script>
     $(document).ready(function () {
         var tableTopStudents = $('#top-ten-students-table').DataTable({
@@ -52,5 +85,11 @@
             ],
             order: [[ 4, "desc" ]]
         });
+
+        var studentsTableOptions = getStudentsDatatableOptions('/Students/GetEmptyScores') // in site.js
+        studentsTableOptions.order = [[1, 'asc'], [2, 'asc'], [4, 'asc']]
+        var tableScorelessStudents = $('#scoreless-students-table').DataTable(
+            studentsTableOptions
+        );
     });
 </script>

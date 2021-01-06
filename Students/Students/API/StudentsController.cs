@@ -57,5 +57,24 @@ namespace Students.API
 
             return new JsonResult(result);
         }
+
+        [HttpGet("Students/GetEmptyScores")]
+        public async Task<IActionResult> GetEmptyScores()
+        {
+            var result = new ApiResultModel<Student>();
+
+            try
+            {
+                var students = await _service.GetStudentsWithEmptyScores();
+                result.Data = students;
+                result.Message = "Success";
+            }
+            catch (Exception ex)
+            {
+                result.ErrorMessage = ex.Message;
+            }
+
+            return new JsonResult(result);
+        }
     }
 }

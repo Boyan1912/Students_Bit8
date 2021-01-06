@@ -50,7 +50,7 @@ namespace Students.Services
                     {
                         var student = new SummaryStudentModel((int)reader.GetValue(0), reader.GetValue(1).ToString(), reader.GetValue(2).ToString());
                         DateTime dateBirth;
-                        if (DateTime.TryParse(reader.GetValue(2).ToString(), null, System.Globalization.DateTimeStyles.None, out dateBirth))
+                        if (DateTime.TryParse(reader.GetValue(3).ToString(), null, System.Globalization.DateTimeStyles.None, out dateBirth))
                         {
                             student.DateOfBirth = dateBirth.ToString("MM/dd/yyyy");
                         }

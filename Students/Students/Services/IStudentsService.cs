@@ -10,5 +10,6 @@ namespace Students.Services
     {
         Task<List<Student>> GetAll();
         Task<List<SummaryStudentModel>> GetTopTen();
+        Task<List<Student>> GetStudentsWithEmptyScores();
     }
 }

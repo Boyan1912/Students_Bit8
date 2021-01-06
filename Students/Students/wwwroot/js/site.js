@@ -99,33 +99,39 @@ function renderDisciplineInTableCell(result, semester, index, value, studentId) 
         deleteDiscipline(value);
     });
     if (index === semester.Disciplines.length - 1) {
-        result = result + '<div class="row add-btn-wrapper" style="padding-left:10px;"><button class="col-9 btn btn-success btn-sm" type="button" id="' + addBtnId + '">Add Discipline</button></div>';
-        result = result + '<form id="' + addDisciplineFormId + '" style="display:none" >' +
-                                    '<div class="form-group">' +
-                                        '<label>Name</label>' +
-                                        '<input type="text" class="form-control" name="name" placeholder="Discipline name">' +
-                                    '</div>' + 
-                                    '<div class="form-group">' +
-                                        '<label>Professor Name</label>' +
-                                        '<input type="text" class="form-control" name="professor" placeholder="Professor name">' +
-                                    '</div>' +
-                                    '<div class="form-group">' +
-                                        '<label>Score</label>' +
-                                        '<input type="number" class="form-control" name="score" placeholder="Score">' +
-                                    '</div>' +
-                                    '<button type="button" id="' + addDisciplineBtnId + '" class="btn btn-primary">Submit</button>' +
-                                '</form>';
-        $('#' + addBtnId).on('click', function(e) {
-            $('#' + addDisciplineFormId).show();
-        });
-        $('#' + addDisciplineBtnId).on('click', function(e) {
-            var discName = $('#' + addDisciplineFormId + ' input[name="name"]').val();
-            var profName = $('#' + addDisciplineFormId + ' input[name="professor"]').val();
-            var score = $('#' + addDisciplineFormId + ' input[name="score"]').val();
-                                
-            postCreateDiscipline(semester.IdSemester, discName, profName, score)
-        });
+       result += getAddDisciplineUI(addBtnId, addDisciplineFormId, addDisciplineBtnId, semester.IdSemester); 
     }
+
+    return result;
+}
+
+function getAddDisciplineUI(addBtnId, addDisciplineFormId, addDisciplineBtnId, semesterId) {
+    var result = '<div class="row add-btn-wrapper" style="padding-left:10px;"><button class="col-9 btn btn-success btn-sm" type="button" id="' + addBtnId + '">Add Discipline</button></div>';
+    result = result + '<form id="' + addDisciplineFormId + '" style="display:none" >' +
+                                '<div class="form-group">' +
+                                    '<label>Name</label>' +
+                                    '<input type="text" class="form-control" name="name" placeholder="Discipline name">' +
+                                '</div>' + 
+                                '<div class="form-group">' +
+                                    '<label>Professor Name</label>' +
+                                    '<input type="text" class="form-control" name="professor" placeholder="Professor name">' +
+                                '</div>' +
+                                '<div class="form-group">' +
+                                    '<label>Score</label>' +
+                                    '<input type="number" class="form-control" name="score" placeholder="Score">' +
+                                '</div>' +
+                                '<button type="button" id="' + addDisciplineBtnId + '" class="btn btn-primary">Submit</button>' +
+                            '</form>';
+    $('#' + addBtnId).on('click', function(e) {
+        $('#' + addDisciplineFormId).show();
+    });
+    $('#' + addDisciplineBtnId).on('click', function(e) {
+        var discName = $('#' + addDisciplineFormId + ' input[name="name"]').val();
+        var profName = $('#' + addDisciplineFormId + ' input[name="professor"]').val();
+        var score = $('#' + addDisciplineFormId + ' input[name="score"]').val();
+                                
+        postCreateDiscipline(semesterId, discName, profName, score)
+    });
 
     return result;
 }
@@ -205,17 +211,13 @@ function getStudentsDatatableOptions(sourceUrl) {
                     render: function ( data, type, row, meta ) {
                         var result = '';
                         $.each(row.Semesters, function( index, value ) {
-                            if (index === 0) {
-                                result = result + '<br/>';
-                            }
                             var addBtnId = 'add-btn-' + value.IdSemester;
                             var addSemesterFormId = 'add-form-' + row.IdStudent;
                             var addSemesterBtnId = 'add-semester-btn-' + row.IdStudent;
-                            result = result + ('<div class="row">' +
-                                '<div class="col-12">' + value.Name + '</div>' + 
-                                '</div>');
 
-                            if (index === row.Semesters.length - 1) {
+                            if (index === 0) {
+                                result = result + '<br/>';
+
                                 result = result + '<div class="row add-btn-wrapper" style="padding-left:10px;"><button class="col-5 btn btn-warning btn-sm" type="button" id="' + addBtnId + '">Add Semester</button></div>';
                                 result = result + '<form id="' + addSemesterFormId + '" style="display:none" >' +
                                                             '<div class="form-group">' +
@@ -231,6 +233,14 @@ function getStudentsDatatableOptions(sourceUrl) {
                                     var semesterName = $('#' + addSemesterFormId + ' input[name="name"]').val();
                                     postCreateSemester(row.IdStudent, semesterName);
                                 });
+                            }
+                            
+                            result = result + ('<div class="row">' +
+                                '<div class="col-12">' + value.Name + '</div>' + 
+                                '</div>');
+
+                            if (value.Disciplines.length === 0) {
+                                result += getAddDisciplineUI('empty-semester-add-btn' + value.IdSemester, 'empty-semester-form-' + value.IdSemester, 'empty-semester-btn-' + value.IdSemester, value.IdSemester);
                             }
 
                             $.each(value.Disciplines, function( i, val ) {
