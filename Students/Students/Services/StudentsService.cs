@@ -26,9 +26,10 @@ namespace Students.Services
                 using var command = new MySqlCommand(
                     "SELECT s.id_student, s.first_name, s.last_name, se.id_semester, se.name AS semester_name, d.id_discipline, d.name AS discipline_name, d.professor_name, d.score " +
                         "FROM student s " +
-                        "INNER JOIN semester se ON s.id_student = se.id_student " +
+                        "INNER JOIN students_semesters ss ON ss.id_student = s.id_student " +
+                        "INNER JOIN semester se ON se.id_semester = ss.id_semester " +
                         "INNER JOIN discipline d ON d.id_semester = se.id_semester;"
-                    ,connection);
+                    , connection);
                 using var reader = await command.ExecuteReaderAsync();
                 {
                     while (await reader.ReadAsync())
@@ -83,9 +84,10 @@ namespace Students.Services
                 await connection.OpenAsync();
 
                 using var command = new MySqlCommand(
-                    "SELECT s.id_student, s.first_name, s.last_name, avg(d.score) AS avg_score " +
+                    "SELECT s.id_student, s.first_name, s.last_name,  s.date_of_birth, avg(d.score) AS avg_score " +
                         "FROM student s " +
-                            "INNER JOIN semester se ON s.id_student = se.id_student " +
+                            "INNER JOIN students_semesters ss ON ss.id_student = s.id_student " +
+                            "INNER JOIN semester se ON se.id_semester = ss.id_semester " +
                             "INNER JOIN discipline d ON d.id_semester = se.id_semester " +
                         "GROUP BY s.id_student " +
                         "ORDER BY avg_score DESC " +
@@ -99,7 +101,8 @@ namespace Students.Services
                         student.IdStudent = (int)reader.GetValue(0);
                         student.FirstName = reader.GetValue(1).ToString();
                         student.LastName = reader.GetValue(2).ToString();
-                        student.AvgScore = (double)reader.GetValue(3);
+                        student.DateOfBirth = (DateTime)reader.GetValue(3);
+                        student.AvgScore = (double)reader.GetValue(4);
                         result.Add(student);
                     }
                 }

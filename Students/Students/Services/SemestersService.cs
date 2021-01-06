@@ -65,7 +65,7 @@ namespace Students.Services
         {
             using var connection = new MySqlConnection(_connString);
             {
-                string script = $"INSERT INTO semester(name) VALUES({name});";
+                string script = $"INSERT INTO semester(name) VALUES('{name}');";
                 if (studentId.HasValue)
                 {
                     script += $"INSERT INTO students_semesters (id_student, id_semester) VALUES({studentId}, (SELECT LAST_INSERT_ID()));";
