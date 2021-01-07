@@ -1,6 +1,6 @@
 ALTER TABLE `mydb`.`student` 
 ADD COLUMN `id_semester` INT NULL AFTER `last_name`,
-ADD INDEX `fk_student_semester_idx` (`id_semester` ASC) VISIBLE;
+ADD INDEX `fk_student_semester_idx` (`id_semester` ASC);
 ;
 ALTER TABLE `mydb`.`student` 
 ADD CONSTRAINT `fk_student_semester`
@@ -43,3 +43,12 @@ CREATE TABLE `mydb`.`students_semesters` (
   `id_student` INT NULL,
   `id_semester` INT NULL,
   PRIMARY KEY (`id`));
+
+ALTER TABLE `mydb`.`discipline` 
+DROP FOREIGN KEY `fk_discipline_semester`;
+ALTER TABLE `mydb2`.`discipline` 
+ADD CONSTRAINT `fk_discipline_semester`
+  FOREIGN KEY (`id_semester`)
+  REFERENCES `mydb2`.`semester` (`id_semester`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
