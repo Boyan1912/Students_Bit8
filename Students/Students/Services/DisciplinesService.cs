@@ -23,31 +23,9 @@ namespace Students.Services
 
         public async Task<List<Discipline>> GetAll()
         {
-            var result = new List<Discipline>();
-            using var connection = new MySqlConnection(_connString);
-            {
-                await connection.OpenAsync();
+            string sql = "SELECT * FROM discipline;";
 
-                using var command = new MySqlCommand("SELECT * FROM discipline;", connection);
-                using var reader = await command.ExecuteReaderAsync();
-                {
-                    while (await reader.ReadAsync())
-                    {
-                        var discipline = new Discipline((int)reader.GetValue(0), reader.GetValue(1).ToString(), reader.GetValue(2).ToString());
-                        float score;
-                        if (float.TryParse(reader.GetValue(3).ToString(), System.Globalization.NumberStyles.Float, null, out score))
-                        {
-                            discipline.Score = score;
-                        }
-
-                        result.Add(discipline);
-                    }
-                    
-                }
-                await connection.CloseAsync();
-            }
-
-            return result;
+            return await repo.GetResults<Discipline>(sql, (reader, result) => ParseDiscipline(reader, result));
         }
 
         public async Task Delete(int id)
@@ -94,6 +72,21 @@ namespace Students.Services
             var result = await repo.GetSingleResult(sql, connection);
             float score;
             return !float.TryParse(result.ToString(), System.Globalization.NumberStyles.Float, null, out score);
+        }
+
+        private async Task ParseDiscipline(MySqlDataReader reader, List<Discipline> result)
+        {
+            while (await reader.ReadAsync())
+            {
+                var discipline = new Discipline((int)reader.GetValue(0), reader.GetValue(1).ToString(), reader.GetValue(2).ToString());
+                float score;
+                if (float.TryParse(reader.GetValue(3).ToString(), System.Globalization.NumberStyles.Float, null, out score))
+                {
+                    discipline.Score = score;
+                }
+
+                result.Add(discipline);
+            }
         }
     }
 }

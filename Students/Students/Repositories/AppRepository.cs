@@ -39,15 +39,22 @@ namespace Students.Repositories
             }
         }
 
-        /*public async Task<MySqlDataReader> GetResults(string sql)
+        public async Task<List<T>> GetResults<T>(string sql, Func<MySqlDataReader, List<T>, Task> parseFunc)
         {
+            var result = new List<T>();
             using var connection = new MySqlConnection(_connString);
             {
                 await connection.OpenAsync();
+
                 using var command = new MySqlCommand(sql, connection);
-                await command.ExecuteScalarAsync();
+                using var reader = await command.ExecuteReaderAsync();
+                {
+                    await parseFunc(reader, result);
+                }
                 await connection.CloseAsync();
             }
-        }*/
+
+            return result;
+        }
     }
 }

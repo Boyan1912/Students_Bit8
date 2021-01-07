@@ -21,61 +21,11 @@ namespace Students.Services
 
         public async Task<List<Semester>> GetAll()
         {
-            var result = new List<Semester>();
-            using var connection = new MySqlConnection(_connString);
-            {
-                await connection.OpenAsync();
-
-                using var command = new MySqlCommand(
-                    "SELECT s.id_semester, s.name, s.start_date, s.end_date, d.id_discipline, d.name, d.professor_name, d.score, " +
+            string sql = "SELECT s.id_semester, s.name, s.start_date, s.end_date, d.id_discipline, d.name, d.professor_name, d.score, " +
                         "(SELECT count(id) FROM students_semesters WHERE id_semester = s.id_semester) AS count_students FROM semester s " +
-                    "LEFT JOIN discipline d ON s.id_semester = d.id_semester;", connection);
-                using var reader = await command.ExecuteReaderAsync();
-                {
-                    while (await reader.ReadAsync())
-                    {
-                        int id = (int)reader.GetValue(0);
-                        var semester = result.FirstOrDefault(s => s.IdSemester == id);
-                        if (semester == null)
-                        {
-                            semester = new Semester();
-                            semester.IdSemester = id;
-                            semester.Name = reader.GetValue(1).ToString();
-                            DateTime start;
-                            if (DateTime.TryParse(reader.GetValue(2).ToString(), null, System.Globalization.DateTimeStyles.None, out start))
-                            {
-                                semester.StartDate = start.ToString("MM/dd/yyyy");
-                            }
-                            DateTime end;
-                            if (DateTime.TryParse(reader.GetValue(3).ToString(), null, System.Globalization.DateTimeStyles.None, out end))
-                            {
-                                semester.EndDate = end.ToString("MM/dd/yyyy");
-                            }
-                            semester.Disciplines = new List<Discipline>();
-                            result.Add(semester);
-                        }
-                        if (!semester.HasStudents)
-                        {
-                            semester.HasStudents = (long)reader.GetValue(8) > 0;
-                        }
-                        int disciplineId;
-                        if (int.TryParse(reader.GetValue(4).ToString(), System.Globalization.NumberStyles.Integer, null, out disciplineId))
-                        {
-                            var discipline = new Discipline(disciplineId, reader.GetValue(5).ToString(), reader.GetValue(6).ToString());
-                            float score;
-                            if (float.TryParse(reader.GetValue(7).ToString(), System.Globalization.NumberStyles.Float, null, out score))
-                            {
-                                discipline.Score = score;
-                            }
-                            semester.Disciplines.Add(discipline);
-                        }
-                    }
+                    "LEFT JOIN discipline d ON s.id_semester = d.id_semester;";
 
-                }
-                await connection.CloseAsync();
-            }
-
-            return result;
+            return await repo.GetResults<Semester>(sql, (reader, result) => ParseSemester(reader, result));
         }
 
         public async Task Create(int? studentId, string name, string startDate, string endDate)
@@ -113,6 +63,48 @@ namespace Students.Services
             long countRows = (long)await repo.GetSingleResult("SELECT count(id) FROM students_semesters WHERE id_semester = " + id, connection);
 
             return countRows == 0;
+        }
+
+        private async Task ParseSemester(MySqlDataReader reader, List<Semester> result)
+        {
+            while (await reader.ReadAsync())
+            {
+                int id = (int)reader.GetValue(0);
+                var semester = result.FirstOrDefault(s => s.IdSemester == id);
+                if (semester == null)
+                {
+                    semester = new Semester();
+                    semester.IdSemester = id;
+                    semester.Name = reader.GetValue(1).ToString();
+                    DateTime start;
+                    if (DateTime.TryParse(reader.GetValue(2).ToString(), null, System.Globalization.DateTimeStyles.None, out start))
+                    {
+                        semester.StartDate = start.ToString("MM/dd/yyyy");
+                    }
+                    DateTime end;
+                    if (DateTime.TryParse(reader.GetValue(3).ToString(), null, System.Globalization.DateTimeStyles.None, out end))
+                    {
+                        semester.EndDate = end.ToString("MM/dd/yyyy");
+                    }
+                    semester.Disciplines = new List<Discipline>();
+                    result.Add(semester);
+                }
+                if (!semester.HasStudents)
+                {
+                    semester.HasStudents = (long)reader.GetValue(8) > 0;
+                }
+                int disciplineId;
+                if (int.TryParse(reader.GetValue(4).ToString(), System.Globalization.NumberStyles.Integer, null, out disciplineId))
+                {
+                    var discipline = new Discipline(disciplineId, reader.GetValue(5).ToString(), reader.GetValue(6).ToString());
+                    float score;
+                    if (float.TryParse(reader.GetValue(7).ToString(), System.Globalization.NumberStyles.Float, null, out score))
+                    {
+                        discipline.Score = score;
+                    }
+                    semester.Disciplines.Add(discipline);
+                }
+            }
         }
     }
 }

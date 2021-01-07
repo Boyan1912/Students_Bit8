@@ -27,44 +27,21 @@ namespace Students.Services
                         "LEFT JOIN semester se ON se.id_semester = ss.id_semester " +
                         "LEFT JOIN discipline d ON d.id_semester = se.id_semester;";
 
-            return await GetStudentsResult(sql);
+            return await repo.GetResults<Student>(sql, (reader, result) => ParseStudentsFromSqlResult(reader, result));
         }
 
         public async Task<List<SummaryStudentModel>> GetTopTen()
         {
-            var result = new List<SummaryStudentModel>();
-            using var connection = new MySqlConnection(_connString);
-            {
-                await connection.OpenAsync();
-
-                using var command = new MySqlCommand(
-                    "SELECT s.id_student, s.first_name, s.last_name,  s.date_of_birth, avg(d.score) AS avg_score " +
+            string sql = "SELECT s.id_student, s.first_name, s.last_name,  s.date_of_birth, avg(d.score) AS avg_score " +
                         "FROM student s " +
                             "INNER JOIN students_semesters ss ON ss.id_student = s.id_student " +
                             "INNER JOIN semester se ON se.id_semester = ss.id_semester " +
                             "INNER JOIN discipline d ON d.id_semester = se.id_semester " +
                         "GROUP BY s.id_student " +
                         "ORDER BY avg_score DESC " +
-                    "LIMIT 10;"
-                    , connection);
-                using var reader = await command.ExecuteReaderAsync();
-                {
-                    while (await reader.ReadAsync())
-                    {
-                        var student = new SummaryStudentModel((int)reader.GetValue(0), reader.GetValue(1).ToString(), reader.GetValue(2).ToString());
-                        DateTime dateBirth;
-                        if (DateTime.TryParse(reader.GetValue(3).ToString(), null, System.Globalization.DateTimeStyles.None, out dateBirth))
-                        {
-                            student.DateOfBirth = dateBirth.ToString("MM/dd/yyyy");
-                        }
-                        student.AvgScore = (double)reader.GetValue(4);
-                        result.Add(student);
-                    }
-                }
-                await connection.CloseAsync();
-            }
+                    "LIMIT 10;";
 
-            return result;
+            return await repo.GetResults<SummaryStudentModel>(sql, (reader, results) => ParseSummaryStudentModel(reader, results));
         }
 
         public async Task<List<Student>> GetStudentsWithEmptyScores()
@@ -76,7 +53,7 @@ namespace Students.Services
                         "INNER JOIN discipline d ON d.id_semester = se.id_semester AND isnull(d.score) " +
                         "ORDER BY s.first_name ASC, s.last_name ASC, se.name;";
 
-            return await GetStudentsResult(sql);
+            return await repo.GetResults<Student>(sql, (reader, results) => ParseStudentsFromSqlResult(reader, results));
         }
 
         public async Task CreateStudent(string firstName, string lastName, string dateBirth)
@@ -85,24 +62,6 @@ namespace Students.Services
                     $"VALUES('{firstName}', '{lastName}', STR_TO_DATE('{dateBirth}', '%d/%m/%Y'));";
 
             await repo.Execute(sql);
-        }
-
-        private async Task<List<Student>> GetStudentsResult(string sql)
-        {
-            var result = new List<Student>();
-            using var connection = new MySqlConnection(_connString);
-            {
-                await connection.OpenAsync();
-
-                using var command = new MySqlCommand(sql, connection);
-                using var reader = await command.ExecuteReaderAsync();
-                {
-                    await ParseStudentsFromSqlResult(reader, result);
-                }
-                await connection.CloseAsync();
-            }
-
-            return result;
         }
 
         private async Task ParseStudentsFromSqlResult(MySqlDataReader reader, List<Student> result)
@@ -160,6 +119,21 @@ namespace Students.Services
                         semester.Disciplines.Add(discipline);
                     }
                 }
+            }
+        }
+
+        private async Task ParseSummaryStudentModel(MySqlDataReader reader, List<SummaryStudentModel> result)
+        {
+            while (await reader.ReadAsync())
+            {
+                var student = new SummaryStudentModel((int)reader.GetValue(0), reader.GetValue(1).ToString(), reader.GetValue(2).ToString());
+                DateTime dateBirth;
+                if (DateTime.TryParse(reader.GetValue(3).ToString(), null, System.Globalization.DateTimeStyles.None, out dateBirth))
+                {
+                    student.DateOfBirth = dateBirth.ToString("MM/dd/yyyy");
+                }
+                student.AvgScore = (double)reader.GetValue(4);
+                result.Add(student);
             }
         }
     }

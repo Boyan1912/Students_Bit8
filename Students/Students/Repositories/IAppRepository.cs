@@ -9,7 +9,7 @@ namespace Students.Repositories
     public interface IAppRepository
     {
         Task Execute(string sql, MySqlConnection connection = null);
-        //Task<MySqlDataReader> GetResults(string sql);
         Task<object> GetSingleResult(string sql, MySqlConnection connection);
+        Task<List<T>> GetResults<T>(string sql, Func<MySqlDataReader, List<T>, Task> parseFunc);
     }
 }
