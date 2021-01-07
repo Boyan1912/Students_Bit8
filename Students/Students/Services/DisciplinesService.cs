@@ -66,6 +66,12 @@ namespace Students.Services
             }
         }
 
+        public async Task<List<Discipline>> GetByName(string name)
+        {
+            string sql = $"SELECT * FROM discipline WHERE name='{name}'";
+            return await repo.GetResults<Discipline>(sql, (r, res) => ParseDiscipline(r, res));
+        }
+
         private async Task<bool> CanBeDeleted(int id, MySqlConnection connection)
         {
             string sql = "SELECT score FROM discipline WHERE id_discipline = " + id;

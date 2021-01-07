@@ -12,5 +12,6 @@ namespace Students.Services
         Task<List<SummaryStudentModel>> GetTopTen();
         Task<List<Student>> GetStudentsWithEmptyScores();
         Task CreateStudent(string firstName, string lastName, string dateBirth);
+        Task<List<Student>> GetByName(string fistName, string lastName);
     }
 }

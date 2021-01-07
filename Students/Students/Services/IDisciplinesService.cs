@@ -12,5 +12,6 @@ namespace Students.Services
         Task Delete(int id);
         Task UpdateProfessorName(int id, string professorName);
         Task Create(string name, string professorName, int? semesterId, float? score = null);
+        Task<List<Discipline>> GetByName(string name);
     }
 }

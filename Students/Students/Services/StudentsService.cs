@@ -64,6 +64,12 @@ namespace Students.Services
             await repo.Execute(sql);
         }
 
+        public async Task<List<Student>> GetByName(string fistName, string lastName)
+        {
+            string sql = $"SELECT * FROM student WHERE first_name='{fistName}' AND last_name='{lastName}';";
+            return await repo.GetResults<Student>(sql, (r, res) => ParseStudentsFromSqlResult(r, res));
+        }
+
         private async Task ParseStudentsFromSqlResult(MySqlDataReader reader, List<Student> result)
         {
             while (await reader.ReadAsync())
